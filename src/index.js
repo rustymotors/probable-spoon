@@ -15,10 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import net from "node:net";
+import { emitKeypressEvents } from "node:readline";
+
+// === TYPES ===
 
 /** @typedef connectionHandler
  * @type {function(net.Socket): void}
  */
+
+/** @typedef errorHandler
+ * @type {function(Error): void}
+ */
+
+/**
+ * @typedef KeypressEvent
+ * @type {object}
+ * @property {string} sequence
+ * @property {string} name
+ * @property {boolean} ctrl
+ * @property {boolean} meta
+ * @property {boolean} shift
+ */
+
+// === GLOBALS ===
+
+/** @type {TCPServer} */
+let loginServer;
+
+/** @type {NodeJS.Timeout} */
+let timer;
+
+// === FUNCTIONS ===
 
 /**
  *
@@ -46,17 +73,23 @@ export function onServerError(err) {
 }
 
 /**
+ *
+ * @param {{ address(): net.AddressInfo | null | string}} s
+ * @returns string
+ */
+function getPort(s) {
+  const address = s.address();
+  if (address === null || typeof address === "string") {
+    return String(address);
+  }
+  return String(address.port);
+}
+
+/**
  * @param {net.Server} s
  */
 function onListening(s) {
-  const address = s.address();
-
-  if (address === null || typeof address === "string") {
-    console.error("Server listening on unknown address");
-    return;
-  }
-
-  const port = address.port;
+  const port = getPort(s);
 
   console.log(`Server listening on port ${port}`);
   s.on("connection", onConnection);
@@ -66,6 +99,25 @@ function onListening(s) {
   s.on("error", (err) => {
     console.error(`Server on port ${port} errored: ${err.message}`);
   });
+}
+
+/**
+ *
+ * @param {KeypressEvent} key
+ */
+function handleKeypressEvent(key) {
+  const keyString = key.sequence;
+
+  if (keyString === "x") {
+    if (timer !== undefined) {
+      console.log("Exiting...");
+      clearInterval(timer);
+      process.stdin.setRawMode(false);
+      loginServer.close(onServerError).then(() => {
+        _atExit();
+      });
+    }
+  }
 }
 
 export class TCPServer {
@@ -80,16 +132,62 @@ export class TCPServer {
     this.port = port;
     this.server = net.createServer(onConnection);
     this.server.on("error", onServerError);
-    this.server.on("listening", onListening);
+    this.server.on("listening", () => {
+      onListening(this.server);
+    });
   }
 
   listen() {
     this.server.listen(this.port);
   }
+
+  /**
+   *
+   * @param {*} errorHandler
+   */
+  async close(errorHandler) {
+    return new Promise((resolve, reject) => {
+      this.server.close((err) => {
+        if (err) {
+          errorHandler(err);
+          reject(err);
+        }
+        resolve(void 0);
+      });
+    });
+  }
+}
+
+function _atExit(exitCode = 0) {
+  console.log("Goodbye, world!");
+  process.exit(exitCode);
 }
 
 export default function main() {
+  process.on("exit", (/** @type {number} **/ code) => {
+    console.log(`Server exited with code ${code}`);
+  });
+
   console.log("Hello, world!");
-  const server = new TCPServer(8080, onListening, onConnection, onServerError);
-  server.listen();
+  loginServer = new TCPServer(8226, onListening, onConnection, onServerError);
+  loginServer.listen();
+
+  if (process.stdin.isTTY !== true) {
+    return;
+  }
+  emitKeypressEvents(process.stdin);
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  console.log("Press Ctrl+C to exit");
+  process.stdin.on("keypress", (str, key) => {
+    if (key !== undefined) {
+      handleKeypressEvent(key);
+    }
+  });
+  timer = setInterval(mainLoop, 1000);
+}
+function mainLoop() {
+  if (process.stdin.read() === "\u0003") {
+    // Ctrl+C
+  }
 }
