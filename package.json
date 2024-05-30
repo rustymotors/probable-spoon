@@ -2,9 +2,7 @@
   "name": "probable-spoon",
   "version": "1.0.0",
   "description": "",
-  "exports": {
-    ".": "./src/index.js"
-  },
+  "exports": "./src/index.js",
   "type": "module",
   "scripts": {
     "start": "node server.js",
