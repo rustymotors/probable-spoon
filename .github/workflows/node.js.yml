@@ -32,5 +32,4 @@ jobs:
       with:
         # If specified, run `pnpm install`
         run_install: true
-    - run: pnpm ci
     - run: pnpm test
