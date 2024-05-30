@@ -22,11 +22,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - run: echo {{ matrix.node-version }} > .nvmrc
     - name: NVM Setup Node
       # You may pin to the exact commit or the version.
       # uses: irby/setup-node-nvm@0f2fe973693e3657f208b039956df88e3000939d
       uses: irby/setup-node-nvm@v1.0.0
-    - run: nvm install {{ matrix.node-version }} && nvm use {{ matrix.node-version }}
     - name: Setup pnpm
       # You may pin to the exact commit or the version.
       # uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
