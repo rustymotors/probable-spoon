@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TCPServer } from "../src/index.js";
 
 describe("TCPServer", () => {
-  it("should return an error if the port is in use", () => new Promise(done => {
+  it("should return an error if the port is in use", () => /** @type {Promise<void>} */(new Promise(done => {
     const onListening = vi.fn();
     const onConnection = vi.fn();
     const onServerError = vi.fn().mockImplementation((err) => {
@@ -15,5 +15,5 @@ describe("TCPServer", () => {
 
     const s = new TCPServer(80, onListening, onConnection, onServerError);
     s.listen();
-  }));
+  })));
 });
