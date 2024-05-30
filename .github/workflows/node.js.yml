@@ -21,11 +21,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+    - name: Setup pnpm ${{ matrix.node-version }}
+      # You may pin to the exact commit or the version.
+      # uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
+      uses: pnpm/action-setup@v4.0.0
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: corepack enable pnpm
+        # Version of pnpm to install
+        version: ${{ matrix.node-version }}
+        # If specified, run `pnpm install`
+        run_install: true
     - run: pnpm ci
     - run: pnpm test
