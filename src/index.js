@@ -16,11 +16,6 @@
 
 import net from "node:net";
 
-/**
- * @typedef listeningHandler
- * @type {function(net.Server): void}
- */
-
 /** @typedef connectionHandler
  * @type {function(net.Socket): void}
  */
@@ -46,7 +41,7 @@ function onConnection(socket) {
  *
  * @param {Error} err
  */
-function onServerError(err) {
+export function onServerError(err) {
   console.error(`Server error: ${err.message}`);
 }
 
@@ -73,22 +68,28 @@ function onListening(s) {
   });
 }
 
-/**
- *
- * @param {number} port
- * @param {listeningHandler} onListening
- * @param {connectionHandler} onConnection
- */
-function makeTCPServerforPort(port, onListening, onConnection) {
-  const server = net.createServer(onConnection);
+export class TCPServer {
+  /**
+   *
+   * @param {number} port
+   * @param {function(net.Server): void} onListening
+   * @param {function(net.Socket): void} onConnection
+   * @param {function(Error): void} onServerError
+   */
+  constructor(port, onListening, onConnection, onServerError) {
+    this.port = port;
+    this.server = net.createServer(onConnection);
+    this.server.on("error", onServerError);
+    this.server.on("listening", onListening);
+  }
 
-  server.on("error", onServerError);
-  server.on("listening", onListening);
-  server.listen(port);
-  return server;
+  listen() {
+    this.server.listen(this.port);
+  }
 }
 
 export default function main() {
   console.log("Hello, world!");
-  makeTCPServerforPort(8080, onListening, onConnection);
+  const server = new TCPServer(8080, onListening, onConnection, onServerError);
+  server.listen();
 }
