@@ -28,20 +28,23 @@ let loginServer;
 let personaServer;
 
 /**
- *
+ * @param {number} port
  * @param {Buffer} data
  */
-function onData(data) {
+function onData(port, data) {
   const hex = data.toString("hex");
   console.log(`Data received: ${hex}`);
 }
 
 /**
- * @param {NodeJS.Socket} socket
+ * @param {import("node:net").Socket} socket
+ * @param {(port:number, data: Buffer) => void} onData
  */
-function onSocketConnection(socket) {
+function onSocketConnection(socket, onData) {
   console.log("Connection established");
-  socket.on("data", onData);
+  socket.on("data", (data) => {
+    onData(socket.localPort ?? -1, data);
+  });
 }
 
 /**
@@ -102,7 +105,6 @@ function onSocketListening(s) {
   const port = getPort(s);
 
   console.log(`Server listening on port ${port}`);
-  s.on("connection", onSocketConnection);
   s.on("close", () => {
     console.log(`Server on port ${port} closed`);
   });
@@ -133,13 +135,13 @@ export default function main() {
   loginServer = new TCPServer(
     8226,
     onSocketListening,
-    onSocketConnection,
+    (socket) => onSocketConnection(socket, onData),
     onServerError
   );
   personaServer = new TCPServer(
     8228,
     onSocketListening,
-    onSocketConnection,
+    (socket) => onSocketConnection(socket, onData),
     onServerError
   );
 
