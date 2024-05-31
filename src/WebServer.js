@@ -1,19 +1,27 @@
-import net from "node:net";
+import http from "node:http";
+import express from "express";
 
+/** @typedef connectionHandler
+ * @type {function(NodeJS.Socket): void}
+ */
 /** @typedef errorHandler
  * @type {function(Error): void}
  */
-export class TCPServer {
+
+export class WebServer {
   /**
    *
    * @param {number} port
-   * @param {function(net.Server): void} onListening
-   * @param {function(net.Socket): void} onConnection
+   * @param {function(http.Server): void} onListening
+   * @param {function(http.IncomingMessage, http.ServerResponse): void} onConnection
    * @param {errorHandler} onServerError
    */
   constructor(port, onListening, onConnection, onServerError) {
     this.port = port;
-    this.server = net.createServer(onConnection);
+    const app = express();
+    app.use(onConnection);
+    /** @type {http.Server} */
+    this.server = http.createServer(app);
     this.server.on("error", onServerError);
     this.server.on("listening", () => {
       onListening(this.server);

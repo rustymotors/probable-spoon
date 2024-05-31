@@ -14,15 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import express from "express";
 import { MainLoop } from "./MainLoop.js";
 import { TCPServer } from "./TCPServer.js";
-import { createServer } from "http";
+import { WebServer } from "./WebServer.js";
 
 // === GLOBALS ===
 
-/** @type {import("node:http").Server} */
-let authServer
+/** @type {WebServer} */
+let authServer;
 
 /** @type {TCPServer} */
 let loginServer;
@@ -50,11 +49,12 @@ function onSocketConnection(socket) {
 }
 
 /**
- * @param {express.Request} req
- * @param {express.Response} res
+ * @param {import("node:http").IncomingMessage} req
+ * @param {import("node:http").ServerResponse} res
  */
 function onWebConnection(req, res) {
-  res.send("Hello, world!");}
+  res.end("Hello, world!");
+}
 
 /**
  *
@@ -65,8 +65,8 @@ export function onServerError(err) {
 }
 
 /**
- * 
- * @param {Error | undefined} err 
+ *
+ * @param {Error | undefined} err
  */
 function onClose(err = undefined) {
   if (err) {
@@ -89,13 +89,17 @@ function getPort(s) {
 }
 
 /**
- * @param {number} port
+ * @param {import("node:http").Server} s
  */
-function onWebListening(port) {
+function onWebListening(s) {
+  const port = getPort(s);
   console.log(`Web server listening on port ${port}`);
+  s.on("close", () => {
+    console.log(`Server on port ${port} closed`);
+  });
 }
 
-/** 
+/**
  * @param {import("net").Server} s
  */
 function onSocketListening(s) {
@@ -124,16 +128,27 @@ export default function main() {
   });
 
   console.log("Hello, world!");
-  const app = express();
-  app.use(onWebConnection);
-  authServer = createServer(app);
-  loginServer = new TCPServer(8226, onSocketListening, onSocketConnection, onServerError);
-  personaServer = new TCPServer(8228, onSocketListening, onSocketConnection, onServerError);
+  authServer = new WebServer(
+    3000,
+    onWebListening,
+    onWebConnection,
+    onServerError
+  );
+  loginServer = new TCPServer(
+    8226,
+    onSocketListening,
+    onSocketConnection,
+    onServerError
+  );
+  personaServer = new TCPServer(
+    8228,
+    onSocketListening,
+    onSocketConnection,
+    onServerError
+  );
 
   const mainLoop = new MainLoop();
-  mainLoop.addTask("start", authServer.listen.bind(authServer, 3000, () => {
-    onWebListening(3000);
-  }));
+  mainLoop.addTask("start", authServer.listen.bind(authServer));
   mainLoop.addTask("start", loginServer.listen.bind(loginServer));
   mainLoop.addTask("start", personaServer.listen.bind(personaServer));
   mainLoop.addTask("stop", authServer.close.bind(authServer, onClose));
