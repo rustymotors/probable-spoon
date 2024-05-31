@@ -14,28 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import net from "node:net";
-import { emitKeypressEvents } from "node:readline";
+import { MainLoop } from "./MainLoop.js";
+import { TCPServer } from "./TCPServer.js";
 
 // === TYPES ===
 
 /** @typedef connectionHandler
- * @type {function(net.Socket): void}
+ * @type {function(NodeJS.Socket): void}
  */
 
 /** @typedef errorHandler
  * @type {function(Error): void}
  */
 
-/**
- * @typedef KeypressEvent
- * @type {object}
- * @property {string} sequence
- * @property {string} name
- * @property {boolean} ctrl
- * @property {boolean} meta
- * @property {boolean} shift
- */
+/** @external Server
+ * @see https://nodejs.org/api/net.html#net_class_net_server
 
 // === GLOBALS ===
 
@@ -57,7 +50,7 @@ function onData(data) {
 }
 
 /**
- * @param {net.Socket} socket
+ * @param {NodeJS.Socket} socket
  */
 function onConnection(socket) {
   console.log("Connection established");
@@ -74,7 +67,7 @@ export function onServerError(err) {
 
 /**
  *
- * @param {{ address(): net.AddressInfo | null | string}} s
+ * @param {import("net").Server} s
  * @returns string
  */
 function getPort(s) {
@@ -85,8 +78,10 @@ function getPort(s) {
   return String(address.port);
 }
 
-/**
- * @param {net.Server} s
+
+/** 
+ * @typedef {import("net").Server} Server
+ * @param {Server} s
  */
 function onListening(s) {
   const port = getPort(s);
@@ -96,137 +91,16 @@ function onListening(s) {
   s.on("close", () => {
     console.log(`Server on port ${port} closed`);
   });
-  s.on("error", (err) => {
+  s.on("error", (/** @type {Error} */ err) => {
     console.error(`Server on port ${port} errored: ${err.message}`);
   });
 }
 
-export class TCPServer {
-  /**
-   *
-   * @param {number} port
-   * @param {function(net.Server): void} onListening
-   * @param {function(net.Socket): void} onConnection
-   * @param {function(Error): void} onServerError
-   */
-  constructor(port, onListening, onConnection, onServerError) {
-    this.port = port;
-    this.server = net.createServer(onConnection);
-    this.server.on("error", onServerError);
-    this.server.on("listening", () => {
-      onListening(this.server);
-    });
-  }
-
-  listen() {
-    this.server.listen(this.port);
-  }
-
-  /**
-   *
-   * @param {errorHandler} errorHandler
-   */
-  async close(errorHandler) {
-    return new Promise((resolve, reject) => {
-      this.server.close((err) => {
-        if (err) {
-          errorHandler(err);
-          reject(err);
-        }
-        resolve(void 0);
-      });
-    });
-  }
-}
-
-async function _atExit(exitCode = 0) {
+export async function _atExit(exitCode = 0) {
   // await loginServer.close(onServerError);
   // await personaServer.close(onServerError);
   console.log("Goodbye, world!");
   process.exit(exitCode);
-}
-
-class MainLoop {
-  /** @type {NodeJS.Timeout | undefined} */
-  _timer = undefined;
-
-  /** @typedef {function(): Promise<void> | void} Task */
-
-  /** @type {Array<Task>} */
-  _startTasks = [];
-
-  /** @type {Array<Task>} */
-  _stopTasks = [];
-
-  /** @type {Array<Task>} */
-  _loopTasks = [];
-
-  /**
-   *
-   * @param {KeypressEvent} key
-   */
-  handleKeypressEvent(key) {
-    const keyString = key.sequence;
-
-    if (keyString === "x") {
-      this.stop();
-    }
-  }
-  /**
-   *
-   * @param {"start" | "loop" | "stop"} type
-   * @param {function (): void} task
-   */
-  addTask(type, task) {
-    if (type === "start") {
-      this._startTasks.push(task);
-    } else if (type === "stop") {
-      this._stopTasks.push(task);
-    } else if (type === "loop") {
-      this._loopTasks.push(task);
-    }
-  }
-
-  /**
-   * @param {Array<Task>} tasks
-   */
-  async _callTasks(tasks) {
-    tasks.forEach(async (task) => {
-      await task();
-    });
-  }
-
-  async start() {
-    this.timer = setTimeout(this.loop.bind(this), 1000);
-    if (process.stdin.isTTY !== true) {
-      return;
-    }
-    emitKeypressEvents(process.stdin);
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-    console.log("Press X to exit");
-    process.stdin.on("keypress", (str, key) => {
-      if (key !== undefined) {
-        this.handleKeypressEvent(key);
-      }
-    });
-    await this._callTasks(this._startTasks);
-  }
-
-  async stop() {
-    if (this.timer !== undefined) {
-      clearInterval(this.timer);
-      process.stdin.setRawMode(false);
-      console.log("Exiting...");
-      await this._callTasks(this._stopTasks);
-      _atExit();
-    }
-  }
-
-  async loop() {
-    await this._callTasks(this._loopTasks);
-    this.timer = setTimeout(this.loop.bind(this), 1000);
-  }
 }
 
 // === MAIN ===
