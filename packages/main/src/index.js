@@ -130,19 +130,19 @@ export default function main() {
     3000,
     onWebListening,
     onWebConnection,
-    onServerError
+    onServerError,
   );
   loginServer = new TCPServer(
     8226,
     onSocketListening,
     (socket) => onSocketConnection(socket, onData),
-    onServerError
+    onServerError,
   );
   personaServer = new TCPServer(
     8228,
     onSocketListening,
     (socket) => onSocketConnection(socket, onData),
-    onServerError
+    onServerError,
   );
 
   const mainLoop = new MainLoop();
@@ -153,7 +153,7 @@ export default function main() {
   mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
   mainLoop.addTask(
     "stop",
-    personaServer.close.bind(personaServer, onServerError)
+    personaServer.close.bind(personaServer, onServerError),
   );
   mainLoop.start();
 }
