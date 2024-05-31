@@ -1,4 +1,3 @@
-
 /** @type {Map<number, import("obsidian-main").IShardEntry>} */
 const shards = new Map();
 
@@ -56,8 +55,8 @@ class ShardEntry {
   }
 
   /**
-   * 
-   * @param {number} population 
+   *
+   * @param {number} population
    */
   setPopulation(population) {
     this.population = population;
@@ -67,45 +66,49 @@ class ShardEntry {
    * @returns {string}
    */
   formatForWeb() {
-    return `[${this.name}]\n`
-      + `\tDescription=${this.id}\n`
-      + `\tShardId=${this.id}\n`
-      + `\tLoginServerIP=${this.loginServerIP}\n`
-      + `\tLoginServerPort=${this.loginServerPort}\n`
-      + `\tLobbyServerIP=${this.lobbyServerIP}\n`
-      + `\tLobbyServerPort=${this.lobbyServerPort}\n`
-      + `\tMCOTSServerIP=${this.mcotsServerIP}\n`
-      + `\tStatusId=${this.statusId}\n`
-      + `\tStatus_Reason=${this.statusReason}\n`
-      + `\tServerGroup_Name=${this.serverGroupName}\n`
-      + `\tPopulation=${this.population}\n`
-      + `\tMaxPersonasPerUser=${this.maxPersonasPerUser}\n`
-      + `\tDiagnosticServerHost=${this.diagServerIP}\n`
-      + `\tDiagnosticServerPort=${this.diagServerPort}\n`;
+    return (
+      `[${this.name}]\n` +
+      `\tDescription=${this.id}\n` +
+      `\tShardId=${this.id}\n` +
+      `\tLoginServerIP=${this.loginServerIP}\n` +
+      `\tLoginServerPort=${this.loginServerPort}\n` +
+      `\tLobbyServerIP=${this.lobbyServerIP}\n` +
+      `\tLobbyServerPort=${this.lobbyServerPort}\n` +
+      `\tMCOTSServerIP=${this.mcotsServerIP}\n` +
+      `\tStatusId=${this.statusId}\n` +
+      `\tStatus_Reason=${this.statusReason}\n` +
+      `\tServerGroup_Name=${this.serverGroupName}\n` +
+      `\tPopulation=${this.population}\n` +
+      `\tMaxPersonasPerUser=${this.maxPersonasPerUser}\n` +
+      `\tDiagnosticServerHost=${this.diagServerIP}\n` +
+      `\tDiagnosticServerPort=${this.diagServerPort}\n`
+    );
   }
 }
 
 export class ShardService {
-
   /**
-   * 
-   * @param {number} id 
-   * @param {string} name 
+   *
+   * @param {number} id
+   * @param {string} name
    * @param {string} description
    * @param {string} ip
    * @param {string} serverGroupName
    */
   addShard(id, name, description, ip, serverGroupName) {
-    shards.set(id, new ShardEntry({
+    shards.set(
       id,
-      name,
-      description,
-      loginServerIP: ip,
-      lobbyServerIP: ip,
-      serverGroupName: serverGroupName,
-      mcotsServerIP: ip,
-      diagServerIP: ip,     
-    }));
+      new ShardEntry({
+        id,
+        name,
+        description,
+        loginServerIP: ip,
+        lobbyServerIP: ip,
+        serverGroupName: serverGroupName,
+        mcotsServerIP: ip,
+        diagServerIP: ip,
+      }),
+    );
   }
 
   /**
