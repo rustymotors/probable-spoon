@@ -21,14 +21,13 @@ export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */
   _timer = undefined;
 
-  /** @typedef {function(): Promise<void> | void | any} Task */
-  /** @type {Array<Task>} */
+  /** @type {Array<import("obsidian-main").Task>} */
   _startTasks = [];
 
-  /** @type {Array<Task>} */
+  /** @type {Array<import("obsidian-main").Task>} */
   _stopTasks = [];
 
-  /** @type {Array<Task>} */
+  /** @type {Array<import("obsidian-main").Task>} */
   _loopTasks = [];
 
   /**
@@ -45,7 +44,7 @@ export class MainLoop {
   /**
    *
    * @param {"start" | "loop" | "stop"} type
-   * @param {Task} task
+   * @param {import("obsidian-main").Task} task
    */
   addTask(type, task) {
     if (type === "start") {
@@ -58,7 +57,7 @@ export class MainLoop {
   }
 
   /**
-   * @param {Array<Task>} tasks
+   * @param {Array<import("obsidian-main").Task>} tasks
    */
   async _callTasks(tasks) {
     tasks.forEach(async (task) => {

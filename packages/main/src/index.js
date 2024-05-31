@@ -15,7 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { MainLoop } from "./MainLoop.js";
+import { ShardService } from "./ShardService.js";
 import { TCPServer } from "./TCPServer.js";
+import { UserLoginService } from "./UserLoginService.js";
 import { WebServer } from "./WebServer.js";
 import { onNPSData } from "./nps.js";
 import { onWebRequest } from "./web.js";
@@ -125,6 +127,18 @@ export default function main() {
     onServerError
   );
 
+  const shardService = new ShardService();
+  shardService.addShard(
+    1,
+    "Rusty Motors",
+    "A test shard",
+    "10.10.5.20",
+    "Group - 1",
+  );
+
+
+  const userLoginService = new UserLoginService();
+
   const mainLoop = new MainLoop();
   mainLoop.addTask("start", authServer.listen.bind(authServer));
   mainLoop.addTask("start", loginServer.listen.bind(loginServer));
@@ -135,5 +149,10 @@ export default function main() {
     "stop",
     personaServer.close.bind(personaServer, onServerError)
   );
+  mainLoop.addTask(
+    "stop",
+    userLoginService.deleteAllTokens.bind(userLoginService)
+  );
+
   mainLoop.start();
 }

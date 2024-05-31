@@ -9,5 +9,11 @@ declare module "obsidian-main" {
     shift: boolean;
   }
 
+  export type Task = () => Promise<void> | void | any;
+
+  export interface IShardEntry {
+    formatForWeb(): string;
+  }
+
   export function _atExit(): void;
 }
