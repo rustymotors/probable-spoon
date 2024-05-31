@@ -140,23 +140,26 @@ export class TCPServer {
 }
 
 async function _atExit(exitCode = 0) {
-  await loginServer.close(onServerError);
-  await personaServer.close(onServerError);
+  // await loginServer.close(onServerError);
+  // await personaServer.close(onServerError);
   console.log("Goodbye, world!");
   process.exit(exitCode);
 }
 
 class MainLoop {
-  /** @type {MainLoop | undefined} */
-  _instance = undefined;
-
   /** @type {NodeJS.Timeout | undefined} */
   _timer = undefined;
 
-  constructor() {
-    this._instance = this;
-    return this._instance;
-  }
+  /** @typedef {function(): Promise<void> | void} Task */
+
+  /** @type {Array<Task>} */
+  _startTasks = [];
+
+  /** @type {Array<Task>} */
+  _stopTasks = [];
+
+  /** @type {Array<Task>} */
+  _loopTasks = [];
 
   /**
    *
@@ -169,9 +172,32 @@ class MainLoop {
       this.stop();
     }
   }
+  /**
+   *
+   * @param {"start" | "loop" | "stop"} type
+   * @param {function (): void} task
+   */
+  addTask(type, task) {
+    if (type === "start") {
+      this._startTasks.push(task);
+    } else if (type === "stop") {
+      this._stopTasks.push(task);
+    } else if (type === "loop") {
+      this._loopTasks.push(task);
+    }
+  }
 
-  start() {
-    this.timer = setInterval(this.loop, 1000);
+  /**
+   * @param {Array<Task>} tasks
+   */
+  async _callTasks(tasks) {
+    tasks.forEach(async (task) => {
+      await task();
+    });
+  }
+
+  async start() {
+    this.timer = setTimeout(this.loop.bind(this), 1000);
     if (process.stdin.isTTY !== true) {
       return;
     }
@@ -184,29 +210,23 @@ class MainLoop {
         this.handleKeypressEvent(key);
       }
     });
+    await this._callTasks(this._startTasks);
   }
 
-  stop() {
+  async stop() {
     if (this.timer !== undefined) {
+      clearInterval(this.timer);
       process.stdin.setRawMode(false);
       console.log("Exiting...");
-      clearInterval(this.timer);
+      await this._callTasks(this._stopTasks);
       _atExit();
     }
   }
 
-  static getInstance() {
-    if (MainLoop._instance === undefined) {
-      this._instance = new MainLoop();
-    }
-    return this._instance;
+  async loop() {
+    await this._callTasks(this._loopTasks);
+    this.timer = setTimeout(this.loop.bind(this), 1000);
   }
-
-  loop() {}
-}
-
-function mainLoop() {
-  return new MainLoop();
 }
 
 // === MAIN ===
@@ -219,7 +239,15 @@ export default function main() {
   console.log("Hello, world!");
   loginServer = new TCPServer(8226, onListening, onConnection, onServerError);
   personaServer = new TCPServer(8228, onListening, onConnection, onServerError);
-  loginServer.listen();
-  personaServer.listen();
-  mainLoop().start();
+  // loginServer.listen();
+  // personaServer.listen();
+  const mainLoop = new MainLoop();
+  mainLoop.addTask("start", loginServer.listen.bind(loginServer));
+  mainLoop.addTask("start", personaServer.listen.bind(personaServer));
+  mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
+  mainLoop.addTask(
+    "stop",
+    personaServer.close.bind(personaServer, onServerError)
+  );
+  mainLoop.start();
 }
