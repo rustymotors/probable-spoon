@@ -14,23 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import express from "express";
 import { MainLoop } from "./MainLoop.js";
 import { TCPServer } from "./TCPServer.js";
-
-// === TYPES ===
-
-/** @typedef connectionHandler
- * @type {function(NodeJS.Socket): void}
- */
-
-/** @typedef errorHandler
- * @type {function(Error): void}
- */
-
-/** @external Server
- * @see https://nodejs.org/api/net.html#net_class_net_server
+import { createServer } from "http";
 
 // === GLOBALS ===
+
+/** @type {import("node:http").Server} */
+let authServer
 
 /** @type {TCPServer} */
 let loginServer;
@@ -52,10 +44,17 @@ function onData(data) {
 /**
  * @param {NodeJS.Socket} socket
  */
-function onConnection(socket) {
+function onSocketConnection(socket) {
   console.log("Connection established");
   socket.on("data", onData);
 }
+
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ */
+function onWebConnection(req, res) {
+  res.send("Hello, world!");}
 
 /**
  *
@@ -63,6 +62,17 @@ function onConnection(socket) {
  */
 export function onServerError(err) {
   console.error(`Server error: ${err.message}`);
+}
+
+/**
+ * 
+ * @param {Error | undefined} err 
+ */
+function onClose(err = undefined) {
+  if (err) {
+    console.error(`Server close error: ${err.message}`);
+  }
+  console.log("Server closed");
 }
 
 /**
@@ -78,16 +88,21 @@ function getPort(s) {
   return String(address.port);
 }
 
+/**
+ * @param {number} port
+ */
+function onWebListening(port) {
+  console.log(`Web server listening on port ${port}`);
+}
 
 /** 
- * @typedef {import("net").Server} Server
- * @param {Server} s
+ * @param {import("net").Server} s
  */
-function onListening(s) {
+function onSocketListening(s) {
   const port = getPort(s);
 
   console.log(`Server listening on port ${port}`);
-  s.on("connection", onConnection);
+  s.on("connection", onSocketConnection);
   s.on("close", () => {
     console.log(`Server on port ${port} closed`);
   });
@@ -97,8 +112,6 @@ function onListening(s) {
 }
 
 export async function _atExit(exitCode = 0) {
-  // await loginServer.close(onServerError);
-  // await personaServer.close(onServerError);
   console.log("Goodbye, world!");
   process.exit(exitCode);
 }
@@ -111,13 +124,19 @@ export default function main() {
   });
 
   console.log("Hello, world!");
-  loginServer = new TCPServer(8226, onListening, onConnection, onServerError);
-  personaServer = new TCPServer(8228, onListening, onConnection, onServerError);
-  // loginServer.listen();
-  // personaServer.listen();
+  const app = express();
+  app.use(onWebConnection);
+  authServer = createServer(app);
+  loginServer = new TCPServer(8226, onSocketListening, onSocketConnection, onServerError);
+  personaServer = new TCPServer(8228, onSocketListening, onSocketConnection, onServerError);
+
   const mainLoop = new MainLoop();
+  mainLoop.addTask("start", authServer.listen.bind(authServer, 3000, () => {
+    onWebListening(3000);
+  }));
   mainLoop.addTask("start", loginServer.listen.bind(loginServer));
   mainLoop.addTask("start", personaServer.listen.bind(personaServer));
+  mainLoop.addTask("stop", authServer.close.bind(authServer, onClose));
   mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
   mainLoop.addTask(
     "stop",

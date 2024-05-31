@@ -15,7 +15,7 @@ export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */
   _timer = undefined;
 
-  /** @typedef {function(): Promise<void> | void} Task */
+  /** @typedef {function(): Promise<void> | void | any} Task */
   /** @type {Array<Task>} */
   _startTasks = [];
 
@@ -39,7 +39,7 @@ export class MainLoop {
   /**
    *
    * @param {"start" | "loop" | "stop"} type
-   * @param {function (): void} task
+   * @param {Task} task
    */
   addTask(type, task) {
     if (type === "start") {
