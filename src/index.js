@@ -42,8 +42,8 @@ import { emitKeypressEvents } from "node:readline";
 /** @type {TCPServer} */
 let loginServer;
 
-/** @type {NodeJS.Timeout} */
-let timer;
+/** @type {TCPServer} */
+let personaServer;
 
 // === FUNCTIONS ===
 
@@ -101,25 +101,6 @@ function onListening(s) {
   });
 }
 
-/**
- *
- * @param {KeypressEvent} key
- */
-function handleKeypressEvent(key) {
-  const keyString = key.sequence;
-
-  if (keyString === "x") {
-    if (timer !== undefined) {
-      console.log("Exiting...");
-      clearInterval(timer);
-      process.stdin.setRawMode(false);
-      loginServer.close(onServerError).then(() => {
-        _atExit();
-      });
-    }
-  }
-}
-
 export class TCPServer {
   /**
    *
@@ -158,10 +139,77 @@ export class TCPServer {
   }
 }
 
-function _atExit(exitCode = 0) {
+async function _atExit(exitCode = 0) {
+  await loginServer.close(onServerError);
+  await personaServer.close(onServerError);
   console.log("Goodbye, world!");
   process.exit(exitCode);
 }
+
+class MainLoop {
+  /** @type {MainLoop | undefined} */
+  _instance = undefined;
+
+  /** @type {NodeJS.Timeout | undefined} */
+  _timer = undefined;
+
+  constructor() {
+    this._instance = this;
+    return this._instance;
+  }
+
+  /**
+   *
+   * @param {KeypressEvent} key
+   */
+  handleKeypressEvent(key) {
+    const keyString = key.sequence;
+
+    if (keyString === "x") {
+      this.stop();
+    }
+  }
+
+  start() {
+    this.timer = setInterval(this.loop, 1000);
+    if (process.stdin.isTTY !== true) {
+      return;
+    }
+    emitKeypressEvents(process.stdin);
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    console.log("Press X to exit");
+    process.stdin.on("keypress", (str, key) => {
+      if (key !== undefined) {
+        this.handleKeypressEvent(key);
+      }
+    });
+  }
+
+  stop() {
+    if (this.timer !== undefined) {
+      process.stdin.setRawMode(false);
+      console.log("Exiting...");
+      clearInterval(this.timer);
+      _atExit();
+    }
+  }
+
+  static getInstance() {
+    if (MainLoop._instance === undefined) {
+      this._instance = new MainLoop();
+    }
+    return this._instance;
+  }
+
+  loop() {}
+}
+
+function mainLoop() {
+  return new MainLoop();
+}
+
+// === MAIN ===
 
 export default function main() {
   process.on("exit", (/** @type {number} **/ code) => {
@@ -170,24 +218,8 @@ export default function main() {
 
   console.log("Hello, world!");
   loginServer = new TCPServer(8226, onListening, onConnection, onServerError);
+  personaServer = new TCPServer(8228, onListening, onConnection, onServerError);
   loginServer.listen();
-
-  if (process.stdin.isTTY !== true) {
-    return;
-  }
-  emitKeypressEvents(process.stdin);
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-  console.log("Press Ctrl+C to exit");
-  process.stdin.on("keypress", (str, key) => {
-    if (key !== undefined) {
-      handleKeypressEvent(key);
-    }
-  });
-  timer = setInterval(mainLoop, 1000);
-}
-function mainLoop() {
-  if (process.stdin.read() === "\u0003") {
-    // Ctrl+C
-  }
+  personaServer.listen();
+  mainLoop().start();
 }
