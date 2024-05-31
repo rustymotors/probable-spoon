@@ -17,6 +17,8 @@
 import { MainLoop } from "./MainLoop.js";
 import { TCPServer } from "./TCPServer.js";
 import { WebServer } from "./WebServer.js";
+import { onNPSData } from "./nps.js";
+import { onWebRequest } from "./web.js";
 
 /** @type {WebServer} */
 let authServer;
@@ -28,15 +30,6 @@ let loginServer;
 let personaServer;
 
 /**
- * @param {number} port
- * @param {Buffer} data
- */
-function onData(port, data) {
-  const hex = data.toString("hex");
-  console.log(`Data received: ${hex}`);
-}
-
-/**
  * @param {import("node:net").Socket} socket
  * @param {(port:number, data: Buffer) => void} onData
  */
@@ -45,14 +38,6 @@ function onSocketConnection(socket, onData) {
   socket.on("data", (data) => {
     onData(socket.localPort ?? -1, data);
   });
-}
-
-/**
- * @param {import("node:http").IncomingMessage} req
- * @param {import("node:http").ServerResponse} res
- */
-function onWebConnection(req, res) {
-  res.end("Hello, world!");
 }
 
 /**
@@ -126,22 +111,17 @@ export default function main() {
   });
 
   console.log("Hello, world!");
-  authServer = new WebServer(
-    3000,
-    onWebListening,
-    onWebConnection,
-    onServerError
-  );
+  authServer = new WebServer(3000, onWebListening, onWebRequest, onServerError);
   loginServer = new TCPServer(
     8226,
     onSocketListening,
-    (socket) => onSocketConnection(socket, onData),
+    (socket) => onSocketConnection(socket, onNPSData),
     onServerError
   );
   personaServer = new TCPServer(
     8228,
     onSocketListening,
-    (socket) => onSocketConnection(socket, onData),
+    (socket) => onSocketConnection(socket, onNPSData),
     onServerError
   );
 
