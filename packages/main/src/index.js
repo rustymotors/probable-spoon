@@ -18,8 +18,6 @@ import { MainLoop } from "./MainLoop.js";
 import { TCPServer } from "./TCPServer.js";
 import { WebServer } from "./WebServer.js";
 
-// === GLOBALS ===
-
 /** @type {WebServer} */
 let authServer;
 
@@ -28,8 +26,6 @@ let loginServer;
 
 /** @type {TCPServer} */
 let personaServer;
-
-// === FUNCTIONS ===
 
 /**
  *
