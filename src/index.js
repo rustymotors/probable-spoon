@@ -124,7 +124,7 @@ export class TCPServer {
 
   /**
    *
-   * @param {*} errorHandler
+   * @param {errorHandler} errorHandler
    */
   async close(errorHandler) {
     return new Promise((resolve, reject) => {
