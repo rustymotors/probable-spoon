@@ -1,4 +1,4 @@
-// probable-spoon is a game server
+// obsidian-spoon is a game server
 // Copyright (C) 2024 Molly Crendraven
 
 // This program is free software: you can redistribute it and/or modify
