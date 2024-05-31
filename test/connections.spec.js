@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { TCPServer } from "../src/TCPServer.js";
+import { TCPServer } from "../packages/main/src/TCPServer.js";
 
 describe("TCPServer", () => {
   it("should return an error if the port is priviliged", () =>

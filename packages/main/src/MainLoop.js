@@ -1,15 +1,5 @@
 import { emitKeypressEvents } from "node:readline";
-import { _atExit } from "./index.js";
-
-/**
- * @typedef KeypressEvent
- * @type {object}
- * @property {string} sequence
- * @property {string} name
- * @property {boolean} ctrl
- * @property {boolean} meta
- * @property {boolean} shift
- */
+import { _atExit } from "obsidian-main";
 
 export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */
@@ -27,7 +17,7 @@ export class MainLoop {
 
   /**
    *
-   * @param {KeypressEvent} key
+   * @param {import("obsidian-main").KeypressEvent} key
    */
   handleKeypressEvent(key) {
     const keyString = key.sequence;

@@ -1,12 +1,12 @@
 {
-  "name": "obsidian",
+  "name": "obsidian-main",
   "version": "1.0.0",
   "description": "",
-  "exports": "./packages/main/src/index.js",
+  "exports": "./src/index.js",
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint .",
+    "start": "node server.js",
     "test": "vitest run"
   },
   "keywords": [],
@@ -22,7 +22,6 @@
   },
   "packageManager": "pnpm@9.1.4+sha256.30a1801ac4e723779efed13a21f4c39f9eb6c9fbb4ced101bce06b422593d7c9",
   "dependencies": {
-    "express": "^4.19.2",
-    "obsidian-main": "link:packages/main"
+    "express": "^4.19.2"
   }
 }
