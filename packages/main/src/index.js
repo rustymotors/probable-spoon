@@ -24,15 +24,6 @@ import { onWebRequest } from "./web.js";
 import crypto from "node:crypto";
 import * as Sentry from "@sentry/node";
 
-/** @type {WebServer} */
-let authServer;
-
-/** @type {TCPServer} */
-let loginServer;
-
-/** @type {TCPServer} */
-let personaServer;
-
 /**
  * @param {import("node:net").Socket} socket
  * @param {(port:number, data: Buffer, sendToClient: (data: Buffer) => void) => void} onData
@@ -115,6 +106,15 @@ function onSocketListening(s) {
   });
 }
 
+/**
+ * 
+ * @param {number} exitCode 
+ */
+export async function _atExit(exitCode = 0) {
+  console.log("Goodbye, world!");
+  process.exit(exitCode);
+}
+
 // === MAIN ===
 
 export default function main() {
@@ -123,14 +123,19 @@ export default function main() {
   });
 
   console.log("Starting obsidian...");
-  authServer = new WebServer(3000, onWebListening, onWebRequest, onServerError);
-  loginServer = new TCPServer(
+  const authServer = new WebServer(
+    3000,
+    onWebListening,
+    onWebRequest,
+    onServerError
+  );
+  const loginServer = new TCPServer(
     8226,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
     onServerError
   );
-  personaServer = new TCPServer(
+  const personaServer = new TCPServer(
     8228,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
