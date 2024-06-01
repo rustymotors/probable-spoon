@@ -9,8 +9,12 @@
 export class INPSPayload {
   constructor() {
     this.data = Buffer.alloc(0);
-    this.toBuffer = function () {};
-    this.toString = function () {};
+    this.toBuffer = function () {
+        // Intentionally empty to be overridden by subclasses
+    };
+    this.toString = function () {
+        // Intentionally empty to be overridden by subclasses
+    };
   }
 
   /**
