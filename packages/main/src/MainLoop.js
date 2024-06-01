@@ -81,6 +81,9 @@ export class MainLoop {
     await this._callTasks(this._startTasks);
   }
 
+  /**
+   * Stops the main loop.
+   */
   async stop() {
     if (this.timer !== undefined) {
       clearInterval(this.timer);
@@ -90,6 +93,9 @@ export class MainLoop {
     }
   }
 
+  /**
+   * Body of the main loop. 
+   */
   async loop() {
     await this._callTasks(this._loopTasks);
     this.timer = setTimeout(this.loop.bind(this), 1000);
