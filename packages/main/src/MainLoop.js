@@ -94,7 +94,7 @@ export class MainLoop {
   }
 
   /**
-   * Body of the main loop. 
+   * Body of the main loop.
    */
   async loop() {
     await this._callTasks(this._loopTasks);
