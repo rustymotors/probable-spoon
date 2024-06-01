@@ -46,6 +46,7 @@ export class TCPServer {
   /**
    *
    * @param {errorHandler} onError
+   * @returns {Promise<void>}
    */
   async close(onError) {
     return new Promise((resolve, reject) => {
@@ -54,7 +55,7 @@ export class TCPServer {
           onError(err);
           reject(err);
         }
-        resolve(void 0);
+        resolve();
       });
     });
   }

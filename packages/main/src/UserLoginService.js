@@ -13,7 +13,7 @@ export class UserLoginService {
    */
   checkUser(username, password) {
     const user = users.find(
-      (user) => user.username === username && user.password === password,
+      (user) => user.username === username && user.password === password
     );
 
     return user ? user.customerId : -1;
@@ -54,13 +54,13 @@ export class UserLoginService {
 
   /**
    * Deletes all tokens.
-   *
+   * @returns {Promise<void>}
    */
   async deleteAllTokens() {
     return new Promise((resolve) => {
       tokens.clear();
       console.log("All tokens deleted");
-      resolve(void 0);
+      resolve();
     });
   }
 }
