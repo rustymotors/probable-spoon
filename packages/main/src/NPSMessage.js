@@ -1,6 +1,12 @@
 import { NPSMessageHeader } from "./NPSMessageHeader.js";
 import { NPSMessagePayload } from "./NPSMessagePayload.js";
 
+/**
+ * Class representing an NPS message.
+ * 
+ * @property {NPSMessageHeader} _header
+ * @property {NPSMessagePayload} data
+ */
 export class NPSMessage {
   constructor() {
     this._header = new NPSMessageHeader();

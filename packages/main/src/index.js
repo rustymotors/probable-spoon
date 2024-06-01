@@ -44,7 +44,11 @@ function onSocketConnection(socket, onData) {
 
   Sentry.setTag("connection_id", connectionId);
 
-  const sendToClient = (/** @type {Buffer} */ data) => {
+  /**
+   * Callback for sending data to the client.
+   * @param {Buffer} data
+   */
+  const sendToClient = (data) => {
     socket.write(data);
   };
 

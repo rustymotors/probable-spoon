@@ -1,3 +1,6 @@
+/**
+ * Class representing an NPS message header.
+ */
 export class NPSMessageHeader {
   constructor() {
     this._dataStart = -1;
