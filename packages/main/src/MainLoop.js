@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { emitKeypressEvents } from "node:readline";
-import { _atExit } from "obsidian-main";
 
 export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */
@@ -88,7 +87,6 @@ export class MainLoop {
       process.stdin.setRawMode(false);
       console.log("Exiting...");
       await this._callTasks(this._stopTasks);
-      _atExit();
     }
   }
 

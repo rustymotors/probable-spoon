@@ -14,6 +14,4 @@ declare module "obsidian-main" {
   export interface IShardEntry {
     formatForWeb(): string;
   }
-
-  export function _atExit(): void;
 }

@@ -115,11 +115,6 @@ function onSocketListening(s) {
   });
 }
 
-export async function _atExit(exitCode = 0) {
-  console.log("Goodbye, world!");
-  process.exit(exitCode);
-}
-
 // === MAIN ===
 
 export default function main() {
@@ -133,13 +128,13 @@ export default function main() {
     8226,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
-    onServerError,
+    onServerError
   );
   personaServer = new TCPServer(
     8228,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
-    onServerError,
+    onServerError
   );
 
   const shardService = new ShardService();
@@ -148,7 +143,7 @@ export default function main() {
     "Rusty Motors",
     "A test shard",
     "10.10.5.20",
-    "Group - 1",
+    "Group - 1"
   );
 
   const userLoginService = new UserLoginService();
@@ -161,11 +156,11 @@ export default function main() {
   mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
   mainLoop.addTask(
     "stop",
-    personaServer.close.bind(personaServer, onServerError),
+    personaServer.close.bind(personaServer, onServerError)
   );
   mainLoop.addTask(
     "stop",
-    userLoginService.deleteAllTokens.bind(userLoginService),
+    userLoginService.deleteAllTokens.bind(userLoginService)
   );
 
   mainLoop.start();
