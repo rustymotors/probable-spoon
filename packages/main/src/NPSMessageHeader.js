@@ -49,7 +49,7 @@ export class NPSMessageHeader {
    * @returns Buffer
    */
   toBuffer() {
-    let buffer = Buffer.alloc(6);
+    const buffer = Buffer.alloc(6);
     buffer.writeUInt16BE(this.messageId, 0);
     buffer.writeUInt16BE(this.messageLength, 2);
     buffer.writeUInt16BE(this.version, 4);
