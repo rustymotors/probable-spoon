@@ -36,6 +36,9 @@ export class TCPServer {
     });
   }
 
+  /**
+   * Start the server listening on the configured port.
+   */
   listen() {
     this.server.listen(this.port);
   }
