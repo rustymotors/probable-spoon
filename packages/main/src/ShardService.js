@@ -104,7 +104,7 @@ export class ShardService {
         description,
         loginServerIP: ip,
         lobbyServerIP: ip,
-        serverGroupName: serverGroupName,
+        serverGroupName,
         mcotsServerIP: ip,
         diagServerIP: ip,
       })
