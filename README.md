@@ -1,3 +1,3 @@
-# probable-spoon
+# obsidian
 
-[![Node.js CI](https://github.com/rustymotors/probable-spoon/actions/workflows/node.js.yml/badge.svg)](https://github.com/rustymotors/probable-spoon/actions/workflows/node.js.yml)
+[![Node.js CI](https://github.com/rustymotors/obsidian/actions/workflows/node.js.yml/badge.svg)](https://github.com/rustymotors/obsidian/actions/workflows/node.js.yml)

@@ -23,7 +23,7 @@ function sendError(res, statusCode, message) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "text/plain");
   res.end(
-    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`
+    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`,
   );
 }
 

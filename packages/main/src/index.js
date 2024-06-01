@@ -118,13 +118,13 @@ export default function main() {
     8226,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
-    onServerError
+    onServerError,
   );
   personaServer = new TCPServer(
     8228,
     onSocketListening,
     (socket) => onSocketConnection(socket, onNPSData),
-    onServerError
+    onServerError,
   );
 
   const shardService = new ShardService();
@@ -146,11 +146,11 @@ export default function main() {
   mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
   mainLoop.addTask(
     "stop",
-    personaServer.close.bind(personaServer, onServerError)
+    personaServer.close.bind(personaServer, onServerError),
   );
   mainLoop.addTask(
     "stop",
-    userLoginService.deleteAllTokens.bind(userLoginService)
+    userLoginService.deleteAllTokens.bind(userLoginService),
   );
 
   mainLoop.start();

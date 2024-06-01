@@ -13,7 +13,7 @@ export class UserLoginService {
    */
   checkUser(username, password) {
     const user = users.find(
-      (user) => user.username === username && user.password === password
+      (user) => user.username === username && user.password === password,
     );
 
     return user ? user.customerId : -1;
