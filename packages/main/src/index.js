@@ -143,7 +143,7 @@ export default function main() {
     "Rusty Motors",
     "A test shard",
     "10.10.5.20",
-    "Group - 1"
+    "Group - 1",
   );
 
   const userLoginService = new UserLoginService();
