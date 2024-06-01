@@ -15,7 +15,12 @@ describe("TCPServer", () => {
 
         console.error = vi.fn();
 
-        const server = new TCPServer(80, onListening, onConnection, onServerError);
+        const server = new TCPServer(
+          80,
+          onListening,
+          onConnection,
+          onServerError,
+        );
         server.listen();
       })
     ));
