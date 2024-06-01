@@ -64,6 +64,10 @@ export class MainLoop {
     });
   }
 
+  /**
+   * Starts the main loop.
+   *
+   */
   async start() {
     this.timer = setTimeout(this.loop.bind(this), 1000);
     if (process.stdin.isTTY !== true) {
@@ -94,7 +98,7 @@ export class MainLoop {
   }
 
   /**
-   * Body of the main loop. 
+   * Body of the main loop.
    */
   async loop() {
     await this._callTasks(this._loopTasks);
