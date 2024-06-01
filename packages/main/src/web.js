@@ -50,7 +50,7 @@ function authLogin(req, res, username, password) {
   }
 
   const token = userLoginService.createToken(customerId);
-  sendTicket(res, token);
+  return sendTicket(res, token);
 }
 
 /**
