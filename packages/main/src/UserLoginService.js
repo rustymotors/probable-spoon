@@ -52,6 +52,10 @@ export class UserLoginService {
     tokens.delete(token);
   }
 
+  /**
+   * Deletes all tokens.
+   * 
+   */
   async deleteAllTokens() {
     return new Promise((resolve) => {
       tokens.clear();
