@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint .",
+    "start": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"@opentelemetry/instrumentation/hook.mjs\", pathToFileURL(\"./\"));' --import ./instrument.mjs server.js",
     "test": "vitest run"
   },
   "keywords": [],
@@ -22,6 +23,9 @@
   },
   "packageManager": "pnpm@9.1.4+sha256.30a1801ac4e723779efed13a21f4c39f9eb6c9fbb4ced101bce06b422593d7c9",
   "dependencies": {
+    "@opentelemetry/instrumentation": "^0.51.1",
+    "@sentry/node": "^8.7.0",
+    "@sentry/profiling-node": "^8.7.0",
     "express": "^4.19.2",
     "obsidian-main": "link:packages/main"
   }

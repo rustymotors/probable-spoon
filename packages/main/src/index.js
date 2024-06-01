@@ -112,7 +112,7 @@ export default function main() {
     console.log(`Server exited with code ${code}`);
   });
 
-  console.log("Hello, world!");
+  console.log("Starting obsidian...");
   authServer = new WebServer(3000, onWebListening, onWebRequest, onServerError);
   loginServer = new TCPServer(
     8226,
@@ -133,9 +133,8 @@ export default function main() {
     "Rusty Motors",
     "A test shard",
     "10.10.5.20",
-    "Group - 1",
+    "Group - 1"
   );
-
 
   const userLoginService = new UserLoginService();
 

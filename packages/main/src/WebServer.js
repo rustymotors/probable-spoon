@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import * as Sentry from "@sentry/node";
+
 import http from "node:http";
 import express from "express";
 
@@ -35,6 +37,7 @@ export class WebServer {
   constructor(port, onListening, onConnection, onServerError) {
     this.port = port;
     const app = express();
+    Sentry.setupExpressErrorHandler(app);
     app.use(onConnection);
     /** @type {http.Server} */
     this.server = http.createServer(app);

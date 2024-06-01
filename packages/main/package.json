@@ -6,7 +6,6 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "node server.js",
     "test": "vitest run"
   },
   "keywords": [],
