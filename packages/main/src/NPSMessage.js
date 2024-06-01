@@ -21,7 +21,10 @@ export class NPSMessage {
 
     const expectedLength = self._header.messageLength - self._header.dataOffset;
 
-    self.data = NPSMessagePayload.parse(data.subarray(self._header.dataOffset), expectedLength);
+    self.data = NPSMessagePayload.parse(
+      data.subarray(self._header.dataOffset),
+      expectedLength,
+    );
 
     return self;
   }

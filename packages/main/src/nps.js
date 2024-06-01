@@ -1,15 +1,13 @@
 import { NPSMessage } from "./NPSMessage.js";
 import { NPSUserLoginPayload } from "./NPSUserLoginPayload.js";
 
-/** 
- * @typedef INPSPayload 
+/**
+ * @typedef INPSPayload
  * @type {import("./NPSMessagePayload.js").INPSPayload}
- */ 
+ */
 
 /** @type {Map<number, (data: Buffer, len: number) => INPSPayload>} */
 const payloadMap = new Map();
-
-
 
 payloadMap.set(1281, NPSUserLoginPayload.parse);
 
@@ -29,7 +27,10 @@ export function onNPSData(port, data, sendToClient) {
     return;
   }
 
-  const payload = messageType(message.data.data, message._header.messageLength - message._header.dataOffset);
+  const payload = messageType(
+    message.data.data,
+    message._header.messageLength - message._header.dataOffset,
+  );
 
   console.log(`Parsed payload: ${payload.toString()}`);
 }

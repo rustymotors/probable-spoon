@@ -7,21 +7,21 @@
  * @property {Buffer} data
  */
 export class INPSPayload {
-    constructor() {
-        this.data = Buffer.alloc(0);
-        this.toBuffer = function () { };
-        this.toString = function () { };
-    }
+  constructor() {
+    this.data = Buffer.alloc(0);
+    this.toBuffer = function () {};
+    this.toString = function () {};
+  }
 
-    /**
-     * @param {Buffer} data
-     * @returns INPSPayload
-     */
-    static parse(data) {
-        const self = new NPSMessagePayload();
-        self.data = data;
-        return self;
-    }
+  /**
+   * @param {Buffer} data
+   * @returns INPSPayload
+   */
+  static parse(data) {
+    const self = new NPSMessagePayload();
+    self.data = data;
+    return self;
+  }
 }
 
 /**
@@ -67,7 +67,7 @@ export class NPSMessagePayload {
   static parse(data, len = data.length) {
     if (data.length !== len) {
       throw new Error(
-        `Invalid payload length: ${data.length}, expected: ${len}`
+        `Invalid payload length: ${data.length}, expected: ${len}`,
       );
     }
     const self = new NPSMessagePayload();

@@ -28,7 +28,7 @@ export class NPSUserLoginPayload extends NPSMessagePayload {
   static parse(data, len = data.length) {
     if (data.length !== len) {
       throw new Error(
-        `Invalid payload length: ${data.length}, expected: ${len}`
+        `Invalid payload length: ${data.length}, expected: ${len}`,
       );
     }
 
@@ -43,7 +43,9 @@ export class NPSUserLoginPayload extends NPSMessagePayload {
       self.sessionKey = data.toString("hex", offset + 2, offset + 2 + nextLen);
       offset += nextLen + 2;
       nextLen = data.readUInt16BE(offset);
-      self.gameId = data.subarray(offset + 2, offset + 2 + nextLen).toString("utf8");
+      self.gameId = data
+        .subarray(offset + 2, offset + 2 + nextLen)
+        .toString("utf8");
     } catch (error) {
       if (!(error instanceof Error)) {
         throw new Error(`Error parsing payload: ${error}`);
