@@ -29,7 +29,7 @@ export class NPSMessage {
 
     self.data = NPSMessagePayload.parse(
       data.subarray(self._header.dataOffset),
-      expectedLength
+      expectedLength,
     );
 
     return self;

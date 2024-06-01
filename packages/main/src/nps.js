@@ -29,7 +29,7 @@ export function onNPSData(port, data, sendToClient) {
 
   const payload = messageType(
     message.data.data,
-    message._header.messageLength - message._header.dataOffset
+    message._header.messageLength - message._header.dataOffset,
   );
 
   console.log(`Parsed payload: ${payload.toString()}`);

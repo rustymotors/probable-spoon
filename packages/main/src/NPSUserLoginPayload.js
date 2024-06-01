@@ -28,7 +28,7 @@ export class NPSUserLoginPayload extends NPSMessagePayload {
   static parse(data, len = data.length) {
     if (data.length !== len) {
       throw new Error(
-        `Invalid payload length: ${data.length}, expected: ${len}`
+        `Invalid payload length: ${data.length}, expected: ${len}`,
       );
     }
 

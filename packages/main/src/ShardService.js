@@ -107,7 +107,7 @@ export class ShardService {
         serverGroupName: serverGroupName,
         mcotsServerIP: ip,
         diagServerIP: ip,
-      })
+      }),
     );
   }
 
