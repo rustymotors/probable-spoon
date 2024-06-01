@@ -21,6 +21,8 @@ import { UserLoginService } from "./UserLoginService.js";
 import { WebServer } from "./WebServer.js";
 import { onNPSData } from "./nps.js";
 import { onWebRequest } from "./web.js";
+import crypto from "node:crypto";
+import * as Sentry from "@sentry/node";
 
 /** @type {WebServer} */
 let authServer;
@@ -33,12 +35,21 @@ let personaServer;
 
 /**
  * @param {import("node:net").Socket} socket
- * @param {(port:number, data: Buffer) => void} onData
+ * @param {(port:number, data: Buffer, sendToClient: (data: Buffer) => void) => void} onData
  */
 function onSocketConnection(socket, onData) {
   console.log("Connection established");
+
+  const connectionId = crypto.randomUUID();
+
+  Sentry.setTag("connection_id", connectionId);
+
+  const sendToClient = (/** @type {Buffer} */ data) => {
+    socket.write(data);
+  };
+
   socket.on("data", (data) => {
-    onData(socket.localPort ?? -1, data);
+    onData(socket.localPort ?? -1, data, sendToClient);
   });
 }
 
@@ -133,7 +144,7 @@ export default function main() {
     "Rusty Motors",
     "A test shard",
     "10.10.5.20",
-    "Group - 1"
+    "Group - 1",
   );
 
   const userLoginService = new UserLoginService();
