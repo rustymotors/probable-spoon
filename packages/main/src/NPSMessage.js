@@ -3,7 +3,7 @@ import { NPSMessagePayload } from "./NPSMessagePayload.js";
 
 /**
  * Class representing an NPS message.
- * 
+ *
  * @property {NPSMessageHeader} _header
  * @property {NPSMessagePayload} data
  */
