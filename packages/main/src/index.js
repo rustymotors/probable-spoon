@@ -136,7 +136,6 @@ export default function main() {
     "Group - 1",
   );
 
-
   const userLoginService = new UserLoginService();
 
   const mainLoop = new MainLoop();
@@ -151,7 +150,7 @@ export default function main() {
   );
   mainLoop.addTask(
     "stop",
-    userLoginService.deleteAllTokens.bind(userLoginService)
+    userLoginService.deleteAllTokens.bind(userLoginService),
   );
 
   mainLoop.start();
