@@ -107,8 +107,8 @@ function onSocketListening(s) {
 }
 
 /**
- * 
- * @param {number} exitCode 
+ *
+ * @param {number} exitCode
  */
 export async function _atExit(exitCode = 0) {
   console.log("Goodbye, world!");
@@ -127,7 +127,7 @@ export default function main() {
     3000,
     onWebListening,
     onWebRequest,
-    onServerError
+    onServerError,
   );
   const loginServer = new TCPServer(
     8226,
