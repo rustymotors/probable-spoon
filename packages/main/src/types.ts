@@ -15,7 +15,7 @@ export interface KeypressEvent {
   shift: boolean;
 }
 
-export type TTask = () => Promise<void> | void | any;
+export type TTask = () => Promise<void> | void;
 
 export interface IShardEntry {
   formatForWeb(): string;
