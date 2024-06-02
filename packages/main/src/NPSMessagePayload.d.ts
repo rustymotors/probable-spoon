@@ -27,35 +27,22 @@
  *  }
  * }
  */
-export class NPSMessagePayload {
-    data;
-    constructor() {
-        this.data = Buffer.alloc(0);
-    }
+/// <reference types="node" resolution-mode="require"/>
+export declare class NPSMessagePayload {
+    data: Buffer;
+    constructor();
     /**
      *
      * @param {Buffer} data
      * @returns NPSMessagePayload
      */
-    static parse(data, len = data.length) {
-        if (data.length !== len) {
-            throw new Error(`Invalid payload length: ${data.length}, expected: ${len}`);
-        }
-        const self = new NPSMessagePayload();
-        self.data = data;
-        return self;
-    }
+    static parse(data: Buffer, len?: number): NPSMessagePayload;
     /**
      * @returns Buffer
      */
-    toBuffer() {
-        return this.data;
-    }
+    toBuffer(): Buffer;
     /**
      * @returns string
      */
-    toString() {
-        return this.data.toString("hex");
-    }
+    toString(): string;
 }
-//# sourceMappingURL=NPSMessagePayload.js.map

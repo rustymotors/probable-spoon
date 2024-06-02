@@ -1,19 +1,12 @@
-declare module "obsidian-main" {
-  export default function main(): void;
-
-  export interface KeypressEvent {
-    sequence: string;
-    name: string;
-    ctrl: boolean;
-    meta: boolean;
-    shift: boolean;
-  }
-
-  export type Task = () => Promise<void> | void | any;
-
-  export interface IShardEntry {
-    formatForWeb(): string;
-  }
-
-  export function _atExit(exitCode = 0): void;
-}
+/**
+ *
+ * @param {Error} err
+ */
+declare function onServerError(err: Error): void;
+/**
+ *
+ * @param {number} exitCode
+ */
+declare function _atExit(exitCode?: number): Promise<void>;
+declare function main(): void;
+export { main, _atExit, onServerError };
