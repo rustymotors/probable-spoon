@@ -10,7 +10,6 @@ class PackedSessionKey {
     this.timestamp = bytes.readUInt32BE(16);
   }
 }
-    
 
 /**
  * @implements {INPSPayload}
