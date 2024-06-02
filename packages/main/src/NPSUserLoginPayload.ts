@@ -1,10 +1,16 @@
 import { NPSMessagePayload } from "./NPSMessagePayload.js";
 import type { INPSPayload } from "./types.js";
 
-/**
- * @typedef INPSPayload
- * @type {INPSPayload}
- */
+class PackedSessionKey {
+  key: string;
+  timestamp: number;
+
+  constructor(bytes: Buffer) {
+    this.key = bytes.toString("hex", 0, 16);
+    this.timestamp = bytes.readUInt32BE(16);
+  }
+}
+    
 
 /**
  * @implements {INPSPayload}
@@ -16,14 +22,14 @@ export class NPSUserLoginPayload
   implements INPSPayload
 {
   ticket: string;
-  sessionKey: string;
+  sessionKey: Buffer;
   gameId: string;
 
   constructor() {
     super();
     this.data = Buffer.alloc(0);
     this.ticket = "";
-    this.sessionKey = "";
+    this.sessionKey = Buffer.alloc(0);
     this.gameId = "";
   }
 
@@ -33,7 +39,7 @@ export class NPSUserLoginPayload
    * @param {Buffer} data
    * @returns {NPSUserLoginPayload}
    */
-  static parse(data: Buffer, len = data.length) {
+  static parse(data: Buffer, len: number = data.length): NPSUserLoginPayload {
     if (data.length !== len) {
       throw new Error(
         `Invalid payload length: ${data.length}, expected: ${len}`,
@@ -48,7 +54,7 @@ export class NPSUserLoginPayload
       offset = nextLen + 2;
       offset += 2; // Skip one empty word
       nextLen = data.readUInt16BE(offset);
-      self.sessionKey = data.toString("hex", offset + 2, offset + 2 + nextLen);
+      self.sessionKey = data.subarray(offset + 2, offset + 2 + nextLen);
       offset += nextLen + 2;
       nextLen = data.readUInt16BE(offset);
       self.gameId = data
@@ -75,7 +81,7 @@ export class NPSUserLoginPayload
   /**
    * @returns {string}
    */
-  toString() {
+  toString(): string {
     return `Ticket: ${this.ticket}, SessionKey: ${this.sessionKey}, GameId: ${this.gameId}`;
   }
 }

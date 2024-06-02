@@ -25,6 +25,7 @@ import * as crypto from "node:crypto";
 import * as Sentry from "@sentry/node";
 import * as net from "node:net";
 import * as http from "node:http";
+import { verifyLegacyCipherSupport } from "./encryption.js";
 
 type TOnDataHandler = (
   port: number,
@@ -126,9 +127,13 @@ async function _atExit(exitCode = 0) {
 // === MAIN ===
 
 function main() {
-  process.on("exit", (/** @type {number} **/ code) => {
+  process.on("exit", (code: number) => {
     console.log(`Server exited with code ${code}`);
   });
+
+  console.log("Verifying legacy crypto support...");
+
+  verifyLegacyCipherSupport();
 
   console.log("Starting obsidian...");
   const authServer = new WebServer(
