@@ -2,7 +2,7 @@
   "name": "obsidian-main",
   "version": "1.0.0",
   "description": "",
-  "exports": "./src/index.js",
+  "exports": "./src/index.ts",
   "type": "module",
   "private": true,
   "scripts": {

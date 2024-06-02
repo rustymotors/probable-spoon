@@ -1,5 +1,5 @@
 import { NPSUserLoginPayload } from "./NPSUserLoginPayload.js";
-import { TClientCallback } from "./types.js";
+import type { TClientCallback } from "./types.js";
 
 /**
  *

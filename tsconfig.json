@@ -7,11 +7,10 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strict": true,
-    "verbatimModuleSyntax": true,
+    "noEmit": true,
     "declaration": true,
     "sourceMap": true
   },
   "exclude": ["node_modules", "**/node_modules/*", "dist/**/*", "./instrument"],
-  "files": ["./server.ts"],
-  "references": [{ "path": "./packages/main" }]
+  "files": ["./server.ts"]
 }

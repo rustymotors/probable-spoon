@@ -18,7 +18,7 @@ import * as Sentry from "@sentry/node";
 
 import http from "node:http";
 import express from "express";
-import { TErrorHandler } from "./types.js";
+import type { TErrorHandler } from "./types.js";
 
 /** @typedef connectionHandler
  * @type {function(NodeJS.Socket): void}

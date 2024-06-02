@@ -1,9 +1,9 @@
 import { NPSMessagePayload } from "./NPSMessagePayload.js";
-import { INPSPayload } from "./types.js";
+import type { INPSPayload } from "./types.js";
 
 /**
  * @typedef INPSPayload
- * @type {import("./NPSMessagePayload.js").INPSPayload}
+ * @type {INPSPayload}
  */
 
 /**

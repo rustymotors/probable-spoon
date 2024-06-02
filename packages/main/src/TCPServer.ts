@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import net from "node:net";
-import { TErrorHandler } from "./types.js";
+import type { TErrorHandler } from "./types.js";
 
 export class TCPServer {
   port: number;

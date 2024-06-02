@@ -1,6 +1,6 @@
 import { NPSMessage } from "./NPSMessage.js";
 import { getPayloadHandler, getPayloadParser } from "./payloadMap.js";
-import { TClientCallback } from "./types.js";
+import type { TClientCallback } from "./types.js";
 
 /**
  * @param {number} port

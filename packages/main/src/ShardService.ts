@@ -1,4 +1,4 @@
-import { IShardEntry } from "./types.js";
+import type { IShardEntry } from "./types.js";
 
 /** @type {Map<number, import("obsidian-main").IShardEntry>} */
 const shards: Map<number, IShardEntry> = new Map();

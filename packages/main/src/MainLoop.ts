@@ -16,7 +16,7 @@
 
 import { emitKeypressEvents } from "node:readline";
 import { _atExit } from "obsidian-main";
-import { KeypressEvent, TTask } from "./types.js";
+import type { KeypressEvent, TTask } from "./types.js";
 
 export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */

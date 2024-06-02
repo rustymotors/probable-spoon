@@ -6,10 +6,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "tsc -b --verbose",
+    "check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "lint": "eslint .",
-    "start": "node --openssl-legacy-provider --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"@opentelemetry/instrumentation/hook.mjs\", pathToFileURL(\"./\"));' --import ./instrument.js server.js",
+    "start": "tsx --openssl-legacy-provider --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"@opentelemetry/instrumentation/hook.mjs\", pathToFileURL(\"./\"));' --import ./instrument.js server.ts",
     "test": "vitest run"
   },
   "keywords": [],
