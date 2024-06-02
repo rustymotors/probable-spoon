@@ -18,7 +18,7 @@ import net from "node:net";
 import { TErrorHandler } from "./types.js";
 
 export class TCPServer {
-  port: any;
+  port: number;
   server: net.Server;
   /**
    *
