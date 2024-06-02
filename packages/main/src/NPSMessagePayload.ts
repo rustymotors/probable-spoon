@@ -1,34 +1,4 @@
 /**
- * @interface INPSPayload
- */
-/**
- * @interface INPSPayload
- * @static parse
- * @property {Buffer} data
- */
-export class INPSPayload {
-  constructor() {
-    this.data = Buffer.alloc(0);
-    this.toBuffer = function () {
-      // Intentionally empty to be overridden by subclasses
-    };
-    this.toString = function () {
-      // Intentionally empty to be overridden by subclasses
-    };
-  }
-
-  /**
-   * @param {Buffer} data
-   * @returns INPSPayload
-   */
-  static parse(data) {
-    const self = new NPSMessagePayload();
-    self.data = data;
-    return self;
-  }
-}
-
-/**
  * To be used as a base class for NPS message payloads.
  *
  * @implements {INPSPayload}
@@ -59,6 +29,7 @@ export class INPSPayload {
  */
 
 export class NPSMessagePayload {
+  data: Buffer;
   constructor() {
     this.data = Buffer.alloc(0);
   }
@@ -68,7 +39,7 @@ export class NPSMessagePayload {
    * @param {Buffer} data
    * @returns NPSMessagePayload
    */
-  static parse(data, len = data.length) {
+  static parse(data: Buffer, len = data.length) {
     if (data.length !== len) {
       throw new Error(
         `Invalid payload length: ${data.length}, expected: ${len}`,

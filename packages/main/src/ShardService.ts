@@ -1,7 +1,24 @@
+import { IShardEntry } from "./types.js";
+
 /** @type {Map<number, import("obsidian-main").IShardEntry>} */
-const shards = new Map();
+const shards: Map<number, IShardEntry> = new Map();
 
 class ShardEntry {
+  id: number;
+  name: string;
+  description: string;
+  loginServerIP: string;
+  loginServerPort: number;
+  lobbyServerIP: string;
+  lobbyServerPort: number;
+  mcotsServerIP: string;
+  statusId: number;
+  statusReason: string;
+  serverGroupName: string;
+  population: number;
+  maxPersonasPerUser: number;
+  diagServerIP: string;
+  diagServerPort: number;
   /**
    * @param {object} values
    * @param {number} values.id
@@ -36,6 +53,22 @@ class ShardEntry {
     maxPersonasPerUser = 1,
     diagServerIP,
     diagServerPort = 80,
+  }: {
+    id: number;
+    name: string;
+    description: string;
+    loginServerIP: string;
+    loginServerPort?: number;
+    lobbyServerIP: string;
+    lobbyServerPort?: number;
+    mcotsServerIP: string;
+    statusId?: number;
+    statusReason?: string;
+    serverGroupName: string;
+    population?: number;
+    maxPersonasPerUser?: number;
+    diagServerIP: string;
+    diagServerPort?: number;
   }) {
     this.id = id;
     this.name = name;
@@ -58,14 +91,14 @@ class ShardEntry {
    *
    * @param {number} population
    */
-  setPopulation(population) {
+  setPopulation(population: number) {
     this.population = population;
   }
 
   /**
    * @returns {string}
    */
-  formatForWeb() {
+  formatForWeb(): string {
     return (
       `[${this.name}]\n` +
       `\tDescription=${this.id}\n` +
@@ -95,7 +128,13 @@ export class ShardService {
    * @param {string} ip
    * @param {string} serverGroupName
    */
-  addShard(id, name, description, ip, serverGroupName) {
+  addShard(
+    id: number,
+    name: string,
+    description: string,
+    ip: string,
+    serverGroupName: string,
+  ) {
     shards.set(
       id,
       new ShardEntry({
@@ -114,7 +153,7 @@ export class ShardService {
   /**
    * @returns {string}
    */
-  getShardList() {
+  getShardList(): string {
     return Array.from(shards.values())
       .map((entry) => entry.formatForWeb())
       .join("\n\n");

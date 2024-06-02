@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import net from "node:net";
+import { TErrorHandler } from "./types.js";
 
-/** @typedef errorHandler
- * @type {function(Error): void}
- */
 export class TCPServer {
+  port: number;
+  server: net.Server;
   /**
    *
    * @param {number} port
@@ -27,7 +27,12 @@ export class TCPServer {
    * @param {function(net.Socket): void} onConnection
    * @param {errorHandler} onServerError
    */
-  constructor(port, onListening, onConnection, onServerError) {
+  constructor(
+    port: number,
+    onListening: (arg0: net.Server) => void,
+    onConnection: (arg0: net.Socket) => void,
+    onServerError: TErrorHandler,
+  ) {
     this.port = port;
     this.server = net.createServer(onConnection);
     this.server.on("error", onServerError);
@@ -48,7 +53,7 @@ export class TCPServer {
    * @param {errorHandler} onError
    * @returns {Promise<void>}
    */
-  async close(onError) {
+  async close(onError: TErrorHandler): Promise<void> {
     return new Promise((resolve, reject) => {
       this.server.close((err) => {
         if (err) {

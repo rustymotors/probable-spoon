@@ -1,3 +1,4 @@
+import { IncomingMessage, ServerResponse } from "node:http";
 import { ShardService } from "./ShardService.js";
 import { UserLoginService } from "./UserLoginService.js";
 
@@ -6,7 +7,7 @@ import { UserLoginService } from "./UserLoginService.js";
  * @param {import("node:http").ServerResponse} res
  * @param {string} ticket
  */
-function sendTicket(res, ticket) {
+function sendTicket(res: ServerResponse, ticket: string) {
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain");
   res.end(`Valid=TRUE\nTicket=${ticket}`);
@@ -19,7 +20,7 @@ function sendTicket(res, ticket) {
  * @param {string} message
  */
 
-function sendError(res, statusCode, message) {
+function sendError(res: ServerResponse, statusCode: number, message: string) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "text/plain");
   res.end(
@@ -31,7 +32,7 @@ function sendError(res, statusCode, message) {
  * @param {import("node:http").IncomingMessage} req
  * @param {import("node:http").ServerResponse} res
  */
-function homePage(req, res) {
+function homePage(req: IncomingMessage, res: ServerResponse) {
   res.end("Hello, world!");
 }
 
@@ -41,7 +42,12 @@ function homePage(req, res) {
  * @param {string} username
  * @param {string} password
  */
-function authLogin(req, res, username, password) {
+function authLogin(
+  req: IncomingMessage,
+  res: ServerResponse,
+  username: string,
+  password: string,
+) {
   const userLoginService = new UserLoginService();
   const customerId = userLoginService.checkUser(username, password);
 
@@ -57,7 +63,7 @@ function authLogin(req, res, username, password) {
  * @param {import("node:http").IncomingMessage} req
  * @param {import("node:http").ServerResponse} res
  */
-function getShardList(req, res) {
+function getShardList(req: IncomingMessage, res: ServerResponse) {
   const shardService = new ShardService();
 
   res.statusCode = 200;
@@ -70,7 +76,7 @@ function getShardList(req, res) {
  * @param {import("node:http").IncomingMessage} req
  * @param {import("node:http").ServerResponse} res
  */
-export function onWebRequest(req, res) {
+function onWebRequest(req: IncomingMessage, res: ServerResponse) {
   console.log(`Request URL: ${req.url}`);
   const url = new URL(`http://${process.env.HOST ?? "localhost"}${req.url}`);
 
@@ -90,3 +96,5 @@ export function onWebRequest(req, res) {
   }
   res.end("Hello, world!");
 }
+
+export { onWebRequest };

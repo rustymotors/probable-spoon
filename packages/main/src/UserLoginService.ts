@@ -11,7 +11,7 @@ export class UserLoginService {
    * @param {string} password
    * @returns {number}
    */
-  checkUser(username, password) {
+  checkUser(username: string, password: string) {
     const user = users.find(
       (user) => user.username === username && user.password === password,
     );
@@ -25,7 +25,7 @@ export class UserLoginService {
    * @param {number} customerId
    * @returns {string}
    */
-  createToken(customerId) {
+  createToken(customerId: number) {
     const token = crypto.randomUUID();
     tokens.set(token, customerId);
     return token;
@@ -38,7 +38,7 @@ export class UserLoginService {
    * @param {string} token
    * @returns {number}
    */
-  checkToken(token) {
+  checkToken(token: string) {
     const customerId = tokens.get(token);
     return customerId ?? -1;
   }
@@ -48,7 +48,7 @@ export class UserLoginService {
    *
    * @param {string} token
    */
-  deleteToken(token) {
+  deleteToken(token: string) {
     tokens.delete(token);
   }
 
@@ -56,7 +56,7 @@ export class UserLoginService {
    * Deletes all tokens.
    * @returns {Promise<void>}
    */
-  async deleteAllTokens() {
+  async deleteAllTokens(): Promise<void> {
     return new Promise((resolve) => {
       tokens.clear();
       console.log("All tokens deleted");

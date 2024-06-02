@@ -1,4 +1,5 @@
 import { NPSMessagePayload } from "./NPSMessagePayload.js";
+import { INPSPayload } from "./types.js";
 
 /**
  * @typedef INPSPayload
@@ -10,7 +11,14 @@ import { NPSMessagePayload } from "./NPSMessagePayload.js";
  * @extends {NPSMessagePayload}
  * Payload for the NPSUserLogin message.
  */
-export class NPSUserLoginPayload extends NPSMessagePayload {
+export class NPSUserLoginPayload
+  extends NPSMessagePayload
+  implements INPSPayload
+{
+  ticket: string;
+  sessionKey: string;
+  gameId: string;
+
   constructor() {
     super();
     this.data = Buffer.alloc(0);
@@ -25,7 +33,7 @@ export class NPSUserLoginPayload extends NPSMessagePayload {
    * @param {Buffer} data
    * @returns {NPSUserLoginPayload}
    */
-  static parse(data, len = data.length) {
+  static parse(data: Buffer, len = data.length) {
     if (data.length !== len) {
       throw new Error(
         `Invalid payload length: ${data.length}, expected: ${len}`,
@@ -60,7 +68,7 @@ export class NPSUserLoginPayload extends NPSMessagePayload {
   /**
    * @returns {Buffer}
    */
-  toBuffer() {
+  toBuffer(): Buffer {
     throw new Error("Method not implemented.");
   }
 

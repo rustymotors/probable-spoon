@@ -8,6 +8,8 @@ import { NPSMessagePayload } from "./NPSMessagePayload.js";
  * @property {NPSMessagePayload} data
  */
 export class NPSMessage {
+  _header: NPSMessageHeader;
+  data: NPSMessagePayload;
   constructor() {
     this._header = new NPSMessageHeader();
     this.data = new NPSMessagePayload();
@@ -17,7 +19,7 @@ export class NPSMessage {
    * @param {Buffer} data
    * @returns {NPSMessage}
    */
-  static parse(data) {
+  static parse(data: Buffer) {
     const self = new NPSMessage();
     if (data.length < 8) {
       throw new Error(`Invalid message length: ${data.length}`);

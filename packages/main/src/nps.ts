@@ -1,26 +1,17 @@
 import { NPSMessage } from "./NPSMessage.js";
-import { NPSUserLoginPayload } from "./NPSUserLoginPayload.js";
-
-/**
- * @typedef INPSPayload
- * @type {import("./NPSMessagePayload.js").INPSPayload}
- */
-
-/** @type {Map<number, (data: Buffer, len: number) => INPSPayload>} */
-const payloadMap = new Map();
-
-payloadMap.set(1281, NPSUserLoginPayload.parse);
+import { getPayloadHandler, getPayloadParser } from "./payloadMap.js";
+import { TClientCallback } from "./types.js";
 
 /**
  * @param {number} port
  * @param {Buffer} data
  * @param {(data: Buffer) => void} sendToClient
  */
-export function onNPSData(port, data, sendToClient) {
+function onNPSData(port: number, data: Buffer, sendToClient: TClientCallback) {
   const message = NPSMessage.parse(data);
   console.log(`Received message on port ${port}: ${message.toString()}`);
 
-  const messageType = payloadMap.get(message._header.messageId);
+  const messageType = getPayloadParser(message._header.messageId);
 
   if (!messageType) {
     console.error(`Unknown message type: ${message._header.messageId}`);
@@ -32,5 +23,14 @@ export function onNPSData(port, data, sendToClient) {
     message._header.messageLength - message._header.dataOffset,
   );
 
-  console.log(`Parsed payload: ${payload.toString()}`);
+  const handler = getPayloadHandler(message._header.messageId);
+
+  if (!handler) {
+    console.error(`Unknown message type: ${message._header.messageId}`);
+    return;
+  }
+
+  handler(payload, sendToClient);
 }
+
+export { onNPSData };

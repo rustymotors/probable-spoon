@@ -16,25 +16,26 @@
 
 import { emitKeypressEvents } from "node:readline";
 import { _atExit } from "obsidian-main";
+import { KeypressEvent, TTask } from "./types.js";
 
 export class MainLoop {
   /** @type {NodeJS.Timeout | undefined} */
-  _timer = undefined;
+  _timer: NodeJS.Timeout | undefined = undefined;
 
   /** @type {Array<import("obsidian-main").Task>} */
-  _startTasks = [];
+  _startTasks: Array<TTask> = [];
 
   /** @type {Array<import("obsidian-main").Task>} */
-  _stopTasks = [];
+  _stopTasks: Array<TTask> = [];
 
   /** @type {Array<import("obsidian-main").Task>} */
-  _loopTasks = [];
+  _loopTasks: Array<TTask> = [];
 
   /**
    *
    * @param {import("obsidian-main").KeypressEvent} key
    */
-  handleKeypressEvent(key) {
+  handleKeypressEvent(key: KeypressEvent) {
     const keyString = key.sequence;
 
     if (keyString === "x") {
@@ -46,7 +47,7 @@ export class MainLoop {
    * @param {"start" | "loop" | "stop"} type
    * @param {import("obsidian-main").Task} task
    */
-  addTask(type, task) {
+  addTask(type: "start" | "loop" | "stop", task: TTask) {
     if (type === "start") {
       this._startTasks.push(task);
     } else if (type === "stop") {
@@ -59,7 +60,7 @@ export class MainLoop {
   /**
    * @param {Array<import("obsidian-main").Task>} tasks
    */
-  async _callTasks(tasks) {
+  async _callTasks(tasks: Array<TTask>) {
     tasks.forEach(async (task) => {
       await task();
     });
@@ -70,7 +71,7 @@ export class MainLoop {
    *
    */
   async start() {
-    this.timer = setTimeout(this.loop.bind(this), 1000);
+    this._timer = setTimeout(this.loop.bind(this), 1000);
     if (process.stdin.isTTY !== true) {
       return;
     }
@@ -90,8 +91,8 @@ export class MainLoop {
    * Stops the main loop.
    */
   async stop() {
-    if (this.timer !== undefined) {
-      clearInterval(this.timer);
+    if (this._timer !== undefined) {
+      clearInterval(this._timer);
       process.stdin.setRawMode(false);
       console.log("Exiting...");
       await this._callTasks(this._stopTasks);
@@ -104,6 +105,6 @@ export class MainLoop {
    */
   async loop() {
     await this._callTasks(this._loopTasks);
-    this.timer = setTimeout(this.loop.bind(this), 1000);
+    this._timer = setTimeout(this.loop.bind(this), 1000);
   }
 }

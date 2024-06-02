@@ -21,14 +21,22 @@ import { UserLoginService } from "./UserLoginService.js";
 import { WebServer } from "./WebServer.js";
 import { onNPSData } from "./nps.js";
 import { onWebRequest } from "./web.js";
-import crypto from "node:crypto";
+import * as crypto from "node:crypto";
 import * as Sentry from "@sentry/node";
+import * as net from "node:net";
+import * as http from "node:http";
+
+type TOnDataHandler = (
+  port: number,
+  data: Buffer,
+  sendToClient: (data: Buffer) => void,
+) => void;
 
 /**
  * @param {import("node:net").Socket} socket
- * @param {(port:number, data: Buffer, sendToClient: (data: Buffer) => void) => void} onData
+ * @param {TOnDataHandler} onData
  */
-function onSocketConnection(socket, onData) {
+function onSocketConnection(socket: net.Socket, onData: TOnDataHandler) {
   console.log("Connection established");
 
   const connectionId = crypto.randomUUID();
@@ -39,7 +47,7 @@ function onSocketConnection(socket, onData) {
    * Callback for sending data to the client.
    * @param {Buffer} data
    */
-  const sendToClient = (data) => {
+  const sendToClient = (data: Buffer) => {
     socket.write(data);
   };
 
@@ -52,7 +60,7 @@ function onSocketConnection(socket, onData) {
  *
  * @param {Error} err
  */
-export function onServerError(err) {
+function onServerError(err: Error) {
   console.error(`Server error: ${err.message}`);
 }
 
@@ -60,7 +68,7 @@ export function onServerError(err) {
  *
  * @param {Error | undefined} err
  */
-function onClose(err = undefined) {
+function onClose(err?: Error) {
   if (err) {
     console.error(`Server close error: ${err.message}`);
   }
@@ -72,7 +80,7 @@ function onClose(err = undefined) {
  * @param {import("net").Server} s
  * @returns string
  */
-function getPort(s) {
+function getPort(s: net.Server) {
   const address = s.address();
   if (address === null || typeof address === "string") {
     return String(address);
@@ -83,7 +91,7 @@ function getPort(s) {
 /**
  * @param {import("node:http").Server} s
  */
-function onWebListening(s) {
+function onWebListening(s: http.Server) {
   const port = getPort(s);
   console.log(`Web server listening on port ${port}`);
   s.on("close", () => {
@@ -94,14 +102,14 @@ function onWebListening(s) {
 /**
  * @param {import("net").Server} s
  */
-function onSocketListening(s) {
+function onSocketListening(s: net.Server) {
   const port = getPort(s);
 
   console.log(`Server listening on port ${port}`);
   s.on("close", () => {
     console.log(`Server on port ${port} closed`);
   });
-  s.on("error", (/** @type {Error} */ err) => {
+  s.on("error", (err: Error) => {
     console.error(`Server on port ${port} errored: ${err.message}`);
   });
 }
@@ -110,14 +118,14 @@ function onSocketListening(s) {
  *
  * @param {number} exitCode
  */
-export async function _atExit(exitCode = 0) {
+async function _atExit(exitCode = 0) {
   console.log("Goodbye, world!");
   process.exit(exitCode);
 }
 
 // === MAIN ===
 
-export default function main() {
+function main() {
   process.on("exit", (/** @type {number} **/ code) => {
     console.log(`Server exited with code ${code}`);
   });
@@ -132,13 +140,13 @@ export default function main() {
   const loginServer = new TCPServer(
     8226,
     onSocketListening,
-    (socket) => onSocketConnection(socket, onNPSData),
+    (socket: net.Socket) => onSocketConnection(socket, onNPSData),
     onServerError,
   );
   const personaServer = new TCPServer(
     8228,
     onSocketListening,
-    (socket) => onSocketConnection(socket, onNPSData),
+    (socket: net.Socket) => onSocketConnection(socket, onNPSData),
     onServerError,
   );
 
@@ -170,3 +178,5 @@ export default function main() {
 
   mainLoop.start();
 }
+
+export { main, _atExit, onServerError };

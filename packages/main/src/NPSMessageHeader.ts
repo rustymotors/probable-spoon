@@ -2,6 +2,10 @@
  * Class representing an NPS message header.
  */
 export class NPSMessageHeader {
+  _dataStart: number;
+  messageId: number;
+  messageLength: number;
+  version: number;
   constructor() {
     this._dataStart = -1;
     this.messageId = -1;
@@ -14,7 +18,7 @@ export class NPSMessageHeader {
    * @param {Buffer} data
    * @returns NPSMessageHeader
    */
-  static parse(data) {
+  static parse(data: Buffer) {
     const self = new NPSMessageHeader();
     if (data.length < 6) {
       throw new Error("Invalid header length");
