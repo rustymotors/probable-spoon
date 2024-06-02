@@ -42,9 +42,9 @@ export class WebServer {
     onListening: (arg0: http.Server) => void,
     onConnection: (
       arg0: http.IncomingMessage,
-      arg1: http.ServerResponse
+      arg1: http.ServerResponse,
     ) => void,
-    onServerError: TErrorHandler
+    onServerError: TErrorHandler,
   ) {
     this.port = port;
     const app = express();

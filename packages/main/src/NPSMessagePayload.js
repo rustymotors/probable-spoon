@@ -28,34 +28,36 @@
  * }
  */
 export class NPSMessagePayload {
-    data;
-    constructor() {
-        this.data = Buffer.alloc(0);
+  data;
+  constructor() {
+    this.data = Buffer.alloc(0);
+  }
+  /**
+   *
+   * @param {Buffer} data
+   * @returns NPSMessagePayload
+   */
+  static parse(data, len = data.length) {
+    if (data.length !== len) {
+      throw new Error(
+        `Invalid payload length: ${data.length}, expected: ${len}`,
+      );
     }
-    /**
-     *
-     * @param {Buffer} data
-     * @returns NPSMessagePayload
-     */
-    static parse(data, len = data.length) {
-        if (data.length !== len) {
-            throw new Error(`Invalid payload length: ${data.length}, expected: ${len}`);
-        }
-        const self = new NPSMessagePayload();
-        self.data = data;
-        return self;
-    }
-    /**
-     * @returns Buffer
-     */
-    toBuffer() {
-        return this.data;
-    }
-    /**
-     * @returns string
-     */
-    toString() {
-        return this.data.toString("hex");
-    }
+    const self = new NPSMessagePayload();
+    self.data = data;
+    return self;
+  }
+  /**
+   * @returns Buffer
+   */
+  toBuffer() {
+    return this.data;
+  }
+  /**
+   * @returns string
+   */
+  toString() {
+    return this.data.toString("hex");
+  }
 }
 //# sourceMappingURL=NPSMessagePayload.js.map

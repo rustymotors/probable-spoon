@@ -6,20 +6,23 @@ import { getPayloadHandler, getPayloadParser } from "./payloadMap.js";
  * @param {(data: Buffer) => void} sendToClient
  */
 function onNPSData(port, data, sendToClient) {
-    const message = NPSMessage.parse(data);
-    console.log(`Received message on port ${port}: ${message.toString()}`);
-    const messageType = getPayloadParser(message._header.messageId);
-    if (!messageType) {
-        console.error(`Unknown message type: ${message._header.messageId}`);
-        return;
-    }
-    const payload = messageType(message.data.data, message._header.messageLength - message._header.dataOffset);
-    const handler = getPayloadHandler(message._header.messageId);
-    if (!handler) {
-        console.error(`Unknown message type: ${message._header.messageId}`);
-        return;
-    }
-    handler(payload, sendToClient);
+  const message = NPSMessage.parse(data);
+  console.log(`Received message on port ${port}: ${message.toString()}`);
+  const messageType = getPayloadParser(message._header.messageId);
+  if (!messageType) {
+    console.error(`Unknown message type: ${message._header.messageId}`);
+    return;
+  }
+  const payload = messageType(
+    message.data.data,
+    message._header.messageLength - message._header.dataOffset,
+  );
+  const handler = getPayloadHandler(message._header.messageId);
+  if (!handler) {
+    console.error(`Unknown message type: ${message._header.messageId}`);
+    return;
+  }
+  handler(payload, sendToClient);
 }
 export { onNPSData };
 //# sourceMappingURL=nps.js.map

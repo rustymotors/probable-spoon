@@ -16,12 +16,12 @@ payloadHandlerMap.set(1281, handleUserLogin);
  * @returns {((data: Buffer, len: number) => INPSPayload) | undefined}
  */
 function getPayloadParser(messageId) {
-    const payloadParser = payloadParserMap.get(messageId);
-    if (!payloadParser) {
-        console.error(`Unknown message type: ${messageId}, no parser found`);
-        return;
-    }
-    return payloadParser;
+  const payloadParser = payloadParserMap.get(messageId);
+  if (!payloadParser) {
+    console.error(`Unknown message type: ${messageId}, no parser found`);
+    return;
+  }
+  return payloadParser;
 }
 /**
  *
@@ -29,12 +29,12 @@ function getPayloadParser(messageId) {
  * @returns {((payload: INPSPayload, clientCallback: (data: Buffer) => void) => void) | undefined}
  */
 function getPayloadHandler(messageId) {
-    const payloadHandler = payloadHandlerMap.get(messageId);
-    if (!payloadHandler) {
-        console.error(`Unknown message type: ${messageId}, no handler found`);
-        return;
-    }
-    return payloadHandler;
+  const payloadHandler = payloadHandlerMap.get(messageId);
+  if (!payloadHandler) {
+    console.error(`Unknown message type: ${messageId}, no handler found`);
+    return;
+  }
+  return payloadHandler;
 }
 export { getPayloadParser, getPayloadHandler };
 //# sourceMappingURL=payloadMap.js.map

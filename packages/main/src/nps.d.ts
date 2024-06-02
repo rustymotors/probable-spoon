@@ -5,5 +5,9 @@ import { TClientCallback } from "./types.js";
  * @param {Buffer} data
  * @param {(data: Buffer) => void} sendToClient
  */
-declare function onNPSData(port: number, data: Buffer, sendToClient: TClientCallback): void;
+declare function onNPSData(
+  port: number,
+  data: Buffer,
+  sendToClient: TClientCallback,
+): void;
 export { onNPSData };

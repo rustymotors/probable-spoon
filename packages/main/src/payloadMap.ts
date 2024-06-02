@@ -45,4 +45,4 @@ function getPayloadHandler(messageId: number) {
   return payloadHandler;
 }
 
-export { getPayloadParser, getPayloadHandler}
+export { getPayloadParser, getPayloadHandler };

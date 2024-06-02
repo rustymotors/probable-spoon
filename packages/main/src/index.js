@@ -24,36 +24,36 @@ import * as Sentry from "@sentry/node";
  * @param {TOnDataHandler} onData
  */
 function onSocketConnection(socket, onData) {
-    console.log("Connection established");
-    const connectionId = crypto.randomUUID();
-    Sentry.setTag("connection_id", connectionId);
-    /**
-     * Callback for sending data to the client.
-     * @param {Buffer} data
-     */
-    const sendToClient = (data) => {
-        socket.write(data);
-    };
-    socket.on("data", (data) => {
-        onData(socket.localPort ?? -1, data, sendToClient);
-    });
+  console.log("Connection established");
+  const connectionId = crypto.randomUUID();
+  Sentry.setTag("connection_id", connectionId);
+  /**
+   * Callback for sending data to the client.
+   * @param {Buffer} data
+   */
+  const sendToClient = (data) => {
+    socket.write(data);
+  };
+  socket.on("data", (data) => {
+    onData(socket.localPort ?? -1, data, sendToClient);
+  });
 }
 /**
  *
  * @param {Error} err
  */
 function onServerError(err) {
-    console.error(`Server error: ${err.message}`);
+  console.error(`Server error: ${err.message}`);
 }
 /**
  *
  * @param {Error | undefined} err
  */
 function onClose(err) {
-    if (err) {
-        console.error(`Server close error: ${err.message}`);
-    }
-    console.log("Server closed");
+  if (err) {
+    console.error(`Server close error: ${err.message}`);
+  }
+  console.log("Server closed");
 }
 /**
  *
@@ -61,64 +61,91 @@ function onClose(err) {
  * @returns string
  */
 function getPort(s) {
-    const address = s.address();
-    if (address === null || typeof address === "string") {
-        return String(address);
-    }
-    return String(address.port);
+  const address = s.address();
+  if (address === null || typeof address === "string") {
+    return String(address);
+  }
+  return String(address.port);
 }
 /**
  * @param {import("node:http").Server} s
  */
 function onWebListening(s) {
-    const port = getPort(s);
-    console.log(`Web server listening on port ${port}`);
-    s.on("close", () => {
-        console.log(`Server on port ${port} closed`);
-    });
+  const port = getPort(s);
+  console.log(`Web server listening on port ${port}`);
+  s.on("close", () => {
+    console.log(`Server on port ${port} closed`);
+  });
 }
 /**
  * @param {import("net").Server} s
  */
 function onSocketListening(s) {
-    const port = getPort(s);
-    console.log(`Server listening on port ${port}`);
-    s.on("close", () => {
-        console.log(`Server on port ${port} closed`);
-    });
-    s.on("error", (err) => {
-        console.error(`Server on port ${port} errored: ${err.message}`);
-    });
+  const port = getPort(s);
+  console.log(`Server listening on port ${port}`);
+  s.on("close", () => {
+    console.log(`Server on port ${port} closed`);
+  });
+  s.on("error", (err) => {
+    console.error(`Server on port ${port} errored: ${err.message}`);
+  });
 }
 /**
  *
  * @param {number} exitCode
  */
 async function _atExit(exitCode = 0) {
-    console.log("Goodbye, world!");
-    process.exit(exitCode);
+  console.log("Goodbye, world!");
+  process.exit(exitCode);
 }
 // === MAIN ===
 function main() {
-    process.on("exit", (/** @type {number} **/ code) => {
-        console.log(`Server exited with code ${code}`);
-    });
-    console.log("Starting obsidian...");
-    const authServer = new WebServer(3000, onWebListening, onWebRequest, onServerError);
-    const loginServer = new TCPServer(8226, onSocketListening, (socket) => onSocketConnection(socket, onNPSData), onServerError);
-    const personaServer = new TCPServer(8228, onSocketListening, (socket) => onSocketConnection(socket, onNPSData), onServerError);
-    const shardService = new ShardService();
-    shardService.addShard(1, "Rusty Motors", "A test shard", "10.10.5.20", "Group - 1");
-    const userLoginService = new UserLoginService();
-    const mainLoop = new MainLoop();
-    mainLoop.addTask("start", authServer.listen.bind(authServer));
-    mainLoop.addTask("start", loginServer.listen.bind(loginServer));
-    mainLoop.addTask("start", personaServer.listen.bind(personaServer));
-    mainLoop.addTask("stop", authServer.close.bind(authServer, onClose));
-    mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
-    mainLoop.addTask("stop", personaServer.close.bind(personaServer, onServerError));
-    mainLoop.addTask("stop", userLoginService.deleteAllTokens.bind(userLoginService));
-    mainLoop.start();
+  process.on("exit", (/** @type {number} **/ code) => {
+    console.log(`Server exited with code ${code}`);
+  });
+  console.log("Starting obsidian...");
+  const authServer = new WebServer(
+    3000,
+    onWebListening,
+    onWebRequest,
+    onServerError,
+  );
+  const loginServer = new TCPServer(
+    8226,
+    onSocketListening,
+    (socket) => onSocketConnection(socket, onNPSData),
+    onServerError,
+  );
+  const personaServer = new TCPServer(
+    8228,
+    onSocketListening,
+    (socket) => onSocketConnection(socket, onNPSData),
+    onServerError,
+  );
+  const shardService = new ShardService();
+  shardService.addShard(
+    1,
+    "Rusty Motors",
+    "A test shard",
+    "10.10.5.20",
+    "Group - 1",
+  );
+  const userLoginService = new UserLoginService();
+  const mainLoop = new MainLoop();
+  mainLoop.addTask("start", authServer.listen.bind(authServer));
+  mainLoop.addTask("start", loginServer.listen.bind(loginServer));
+  mainLoop.addTask("start", personaServer.listen.bind(personaServer));
+  mainLoop.addTask("stop", authServer.close.bind(authServer, onClose));
+  mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
+  mainLoop.addTask(
+    "stop",
+    personaServer.close.bind(personaServer, onServerError),
+  );
+  mainLoop.addTask(
+    "stop",
+    userLoginService.deleteAllTokens.bind(userLoginService),
+  );
+  mainLoop.start();
 }
 export { main, _atExit, onServerError };
 //# sourceMappingURL=index.js.map

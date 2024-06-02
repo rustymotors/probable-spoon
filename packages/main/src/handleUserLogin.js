@@ -4,7 +4,7 @@
  * @param {TClientCallback} clientCallback
  */
 export function handleUserLogin(payload, clientCallback) {
-    const userLoginPayload = payload;
-    console.log(`User login: ${userLoginPayload.toString()}`);
+  const userLoginPayload = payload;
+  console.log(`User login: ${userLoginPayload.toString()}`);
 }
 //# sourceMappingURL=handleUserLogin.js.map

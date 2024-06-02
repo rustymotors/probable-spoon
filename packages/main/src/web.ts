@@ -42,7 +42,12 @@ function homePage(req: IncomingMessage, res: ServerResponse) {
  * @param {string} username
  * @param {string} password
  */
-function authLogin(req: IncomingMessage, res: ServerResponse, username: string, password: string) {
+function authLogin(
+  req: IncomingMessage,
+  res: ServerResponse,
+  username: string,
+  password: string,
+) {
   const userLoginService = new UserLoginService();
   const customerId = userLoginService.checkUser(username, password);
 
@@ -92,4 +97,4 @@ function onWebRequest(req: IncomingMessage, res: ServerResponse) {
   res.end("Hello, world!");
 }
 
-export { onWebRequest}
+export { onWebRequest };

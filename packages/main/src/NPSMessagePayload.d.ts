@@ -29,20 +29,20 @@
  */
 /// <reference types="node" resolution-mode="require"/>
 export declare class NPSMessagePayload {
-    data: Buffer;
-    constructor();
-    /**
-     *
-     * @param {Buffer} data
-     * @returns NPSMessagePayload
-     */
-    static parse(data: Buffer, len?: number): NPSMessagePayload;
-    /**
-     * @returns Buffer
-     */
-    toBuffer(): Buffer;
-    /**
-     * @returns string
-     */
-    toString(): string;
+  data: Buffer;
+  constructor();
+  /**
+   *
+   * @param {Buffer} data
+   * @returns NPSMessagePayload
+   */
+  static parse(data: Buffer, len?: number): NPSMessagePayload;
+  /**
+   * @returns Buffer
+   */
+  toBuffer(): Buffer;
+  /**
+   * @returns string
+   */
+  toString(): string;
 }

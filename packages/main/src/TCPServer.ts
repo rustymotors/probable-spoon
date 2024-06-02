@@ -31,7 +31,7 @@ export class TCPServer {
     port: number,
     onListening: (arg0: net.Server) => void,
     onConnection: (arg0: net.Socket) => void,
-    onServerError: TErrorHandler
+    onServerError: TErrorHandler,
   ) {
     this.port = port;
     this.server = net.createServer(onConnection);

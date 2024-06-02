@@ -12,44 +12,44 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import net from "node:net";
 export class TCPServer {
-    port;
-    server;
-    /**
-     *
-     * @param {number} port
-     * @param {function(net.Server): void} onListening
-     * @param {function(net.Socket): void} onConnection
-     * @param {errorHandler} onServerError
-     */
-    constructor(port, onListening, onConnection, onServerError) {
-        this.port = port;
-        this.server = net.createServer(onConnection);
-        this.server.on("error", onServerError);
-        this.server.on("listening", () => {
-            onListening(this.server);
-        });
-    }
-    /**
-     * Start the server listening on the configured port.
-     */
-    listen() {
-        this.server.listen(this.port);
-    }
-    /**
-     *
-     * @param {errorHandler} onError
-     * @returns {Promise<void>}
-     */
-    async close(onError) {
-        return new Promise((resolve, reject) => {
-            this.server.close((err) => {
-                if (err) {
-                    onError(err);
-                    reject(err);
-                }
-                resolve();
-            });
-        });
-    }
+  port;
+  server;
+  /**
+   *
+   * @param {number} port
+   * @param {function(net.Server): void} onListening
+   * @param {function(net.Socket): void} onConnection
+   * @param {errorHandler} onServerError
+   */
+  constructor(port, onListening, onConnection, onServerError) {
+    this.port = port;
+    this.server = net.createServer(onConnection);
+    this.server.on("error", onServerError);
+    this.server.on("listening", () => {
+      onListening(this.server);
+    });
+  }
+  /**
+   * Start the server listening on the configured port.
+   */
+  listen() {
+    this.server.listen(this.port);
+  }
+  /**
+   *
+   * @param {errorHandler} onError
+   * @returns {Promise<void>}
+   */
+  async close(onError) {
+    return new Promise((resolve, reject) => {
+      this.server.close((err) => {
+        if (err) {
+          onError(err);
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
 }
 //# sourceMappingURL=TCPServer.js.map

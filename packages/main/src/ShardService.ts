@@ -53,7 +53,23 @@ class ShardEntry {
     maxPersonasPerUser = 1,
     diagServerIP,
     diagServerPort = 80,
-  }: { id: number; name: string; description: string; loginServerIP: string; loginServerPort?: number; lobbyServerIP: string; lobbyServerPort?: number; mcotsServerIP: string; statusId?: number; statusReason?: string; serverGroupName: string; population?: number; maxPersonasPerUser?: number; diagServerIP: string; diagServerPort?: number; }) {
+  }: {
+    id: number;
+    name: string;
+    description: string;
+    loginServerIP: string;
+    loginServerPort?: number;
+    lobbyServerIP: string;
+    lobbyServerPort?: number;
+    mcotsServerIP: string;
+    statusId?: number;
+    statusReason?: string;
+    serverGroupName: string;
+    population?: number;
+    maxPersonasPerUser?: number;
+    diagServerIP: string;
+    diagServerPort?: number;
+  }) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -112,7 +128,13 @@ export class ShardService {
    * @param {string} ip
    * @param {string} serverGroupName
    */
-  addShard(id: number, name: string, description: string, ip: string, serverGroupName: string) {
+  addShard(
+    id: number,
+    name: string,
+    description: string,
+    ip: string,
+    serverGroupName: string,
+  ) {
     shards.set(
       id,
       new ShardEntry({

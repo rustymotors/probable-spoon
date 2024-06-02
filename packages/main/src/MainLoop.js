@@ -13,86 +13,84 @@
 import { emitKeypressEvents } from "node:readline";
 import { _atExit } from "obsidian-main";
 export class MainLoop {
-    /** @type {NodeJS.Timeout | undefined} */
-    _timer = undefined;
-    /** @type {Array<import("obsidian-main").Task>} */
-    _startTasks = [];
-    /** @type {Array<import("obsidian-main").Task>} */
-    _stopTasks = [];
-    /** @type {Array<import("obsidian-main").Task>} */
-    _loopTasks = [];
-    /**
-     *
-     * @param {import("obsidian-main").KeypressEvent} key
-     */
-    handleKeypressEvent(key) {
-        const keyString = key.sequence;
-        if (keyString === "x") {
-            this.stop();
-        }
+  /** @type {NodeJS.Timeout | undefined} */
+  _timer = undefined;
+  /** @type {Array<import("obsidian-main").Task>} */
+  _startTasks = [];
+  /** @type {Array<import("obsidian-main").Task>} */
+  _stopTasks = [];
+  /** @type {Array<import("obsidian-main").Task>} */
+  _loopTasks = [];
+  /**
+   *
+   * @param {import("obsidian-main").KeypressEvent} key
+   */
+  handleKeypressEvent(key) {
+    const keyString = key.sequence;
+    if (keyString === "x") {
+      this.stop();
     }
-    /**
-     *
-     * @param {"start" | "loop" | "stop"} type
-     * @param {import("obsidian-main").Task} task
-     */
-    addTask(type, task) {
-        if (type === "start") {
-            this._startTasks.push(task);
-        }
-        else if (type === "stop") {
-            this._stopTasks.push(task);
-        }
-        else if (type === "loop") {
-            this._loopTasks.push(task);
-        }
+  }
+  /**
+   *
+   * @param {"start" | "loop" | "stop"} type
+   * @param {import("obsidian-main").Task} task
+   */
+  addTask(type, task) {
+    if (type === "start") {
+      this._startTasks.push(task);
+    } else if (type === "stop") {
+      this._stopTasks.push(task);
+    } else if (type === "loop") {
+      this._loopTasks.push(task);
     }
-    /**
-     * @param {Array<import("obsidian-main").Task>} tasks
-     */
-    async _callTasks(tasks) {
-        tasks.forEach(async (task) => {
-            await task();
-        });
+  }
+  /**
+   * @param {Array<import("obsidian-main").Task>} tasks
+   */
+  async _callTasks(tasks) {
+    tasks.forEach(async (task) => {
+      await task();
+    });
+  }
+  /**
+   * Starts the main loop.
+   *
+   */
+  async start() {
+    this._timer = setTimeout(this.loop.bind(this), 1000);
+    if (process.stdin.isTTY !== true) {
+      return;
     }
-    /**
-     * Starts the main loop.
-     *
-     */
-    async start() {
-        this._timer = setTimeout(this.loop.bind(this), 1000);
-        if (process.stdin.isTTY !== true) {
-            return;
-        }
-        emitKeypressEvents(process.stdin);
-        process.stdin.setRawMode(true);
-        process.stdin.resume();
-        console.log("Press X to exit");
-        process.stdin.on("keypress", (str, key) => {
-            if (key !== undefined) {
-                this.handleKeypressEvent(key);
-            }
-        });
-        await this._callTasks(this._startTasks);
+    emitKeypressEvents(process.stdin);
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+    console.log("Press X to exit");
+    process.stdin.on("keypress", (str, key) => {
+      if (key !== undefined) {
+        this.handleKeypressEvent(key);
+      }
+    });
+    await this._callTasks(this._startTasks);
+  }
+  /**
+   * Stops the main loop.
+   */
+  async stop() {
+    if (this._timer !== undefined) {
+      clearInterval(this._timer);
+      process.stdin.setRawMode(false);
+      console.log("Exiting...");
+      await this._callTasks(this._stopTasks);
+      _atExit();
     }
-    /**
-     * Stops the main loop.
-     */
-    async stop() {
-        if (this._timer !== undefined) {
-            clearInterval(this._timer);
-            process.stdin.setRawMode(false);
-            console.log("Exiting...");
-            await this._callTasks(this._stopTasks);
-            _atExit();
-        }
-    }
-    /**
-     * Body of the main loop.
-     */
-    async loop() {
-        await this._callTasks(this._loopTasks);
-        this._timer = setTimeout(this.loop.bind(this), 1000);
-    }
+  }
+  /**
+   * Body of the main loop.
+   */
+  async loop() {
+    await this._callTasks(this._loopTasks);
+    this._timer = setTimeout(this.loop.bind(this), 1000);
+  }
 }
 //# sourceMappingURL=MainLoop.js.map

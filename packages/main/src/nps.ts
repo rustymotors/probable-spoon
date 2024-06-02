@@ -20,7 +20,7 @@ function onNPSData(port: number, data: Buffer, sendToClient: TClientCallback) {
 
   const payload = messageType(
     message.data.data,
-    message._header.messageLength - message._header.dataOffset
+    message._header.messageLength - message._header.dataOffset,
   );
 
   const handler = getPayloadHandler(message._header.messageId);
@@ -33,4 +33,4 @@ function onNPSData(port: number, data: Buffer, sendToClient: TClientCallback) {
   handler(payload, sendToClient);
 }
 
-export { onNPSData}
+export { onNPSData };

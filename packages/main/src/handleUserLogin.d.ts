@@ -5,4 +5,7 @@ import { TClientCallback } from "./types.js";
  * @param {import("./NPSUserLoginPayload.js").NPSUserLoginPayload} payload
  * @param {TClientCallback} clientCallback
  */
-export declare function handleUserLogin(payload: NPSUserLoginPayload, clientCallback: TClientCallback): void;
+export declare function handleUserLogin(
+  payload: NPSUserLoginPayload,
+  clientCallback: TClientCallback,
+): void;
