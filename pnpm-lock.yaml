@@ -24,7 +24,7 @@ importers:
         version: link:packages/main
       tsx:
         specifier: ^4.11.0
-        version: 4.11.0
+        version: 4.11.2
     devDependencies:
       "@eslint/js":
         specifier: ^9.3.0
@@ -2528,10 +2528,10 @@ packages:
       }
     engines: { node: ">=0.6" }
 
-  tsx@4.11.0:
+  tsx@4.11.2:
     resolution:
       {
-        integrity: sha512-vzGGELOgAupsNVssAmZjbUDfdm/pWP4R+Kg8TVdsonxbXk0bEpE1qh0yV6/QxUVXaVlNemgcPajGdJJ82n3stg==,
+        integrity: sha512-V5DL5v1BuItjsQ2FN9+4OjR7n5cr8hSgN+VGmm/fd2/0cgQdBIWHcQ3bFYm/5ZTmyxkTDBUIaRuW2divgfPe0A==,
       }
     engines: { node: ">=18.0.0" }
     hasBin: true
@@ -4251,7 +4251,7 @@ snapshots:
 
   toidentifier@1.0.1: {}
 
-  tsx@4.11.0:
+  tsx@4.11.2:
     dependencies:
       esbuild: 0.20.2
       get-tsconfig: 4.7.5
