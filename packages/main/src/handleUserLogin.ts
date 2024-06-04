@@ -9,6 +9,8 @@ export function loadPrivateKey(path: string): string {
   return privateKey.toString("utf8");
 }
 
+console.log("foo!");
+
 export function decryptSessionKey(
   encryptedSessionKey: string,
   privateKey: string,
