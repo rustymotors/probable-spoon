@@ -25,7 +25,7 @@
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   },
-  "packageManager": "pnpm@9.1.4+sha256.30a1801ac4e723779efed13a21f4c39f9eb6c9fbb4ced101bce06b422593d7c9",
+  "packageManager": "pnpm@9.2.0",
   "dependencies": {
     "@opentelemetry/instrumentation": "^0.51.1",
     "@sentry/node": "^8.7.0",
