@@ -1,4 +1,3 @@
-
 import { beforeEach, describe, expect, it } from "vitest";
 import { UserLoginService } from "../packages/main/src/UserLoginService.js";
 
@@ -17,7 +16,7 @@ describe("UserLoginService", () => {
   it("should not authenticate a user with invalid credentials", () => {
     const customerId = userLoginService.authenticateUser(
       "admin",
-      "wrongpassword"
+      "wrongpassword",
     );
     expect(customerId).toBe(-1);
   });
