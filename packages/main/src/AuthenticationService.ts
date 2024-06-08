@@ -1,3 +1,5 @@
+import * as crypto from "crypto";
+
 type UserCredentials = Array<{
   username: string;
   password: string;
