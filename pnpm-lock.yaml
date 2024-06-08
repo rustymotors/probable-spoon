@@ -8,8 +8,8 @@ importers:
   .:
     dependencies:
       "@opentelemetry/instrumentation":
-        specifier: ^0.51.1
-        version: 0.51.1(@opentelemetry/api@1.8.0)
+        specifier: ^0.52.0
+        version: 0.52.0(@opentelemetry/api@1.8.0)
       "@sentry/node":
         specifier: ^8.7.0
         version: 8.7.0
@@ -434,6 +434,13 @@ packages:
       }
     engines: { node: ">=14" }
 
+  "@opentelemetry/api-logs@0.52.0":
+    resolution:
+      {
+        integrity: sha512-HxjD7xH9iAE4OyhNaaSec65i1H6QZYBWSwWkowFfsc5YAcDvJG30/J1sRKXEQqdmUcKTXEAnA66UciqZha/4+Q==,
+      }
+    engines: { node: ">=14" }
+
   "@opentelemetry/api@1.8.0":
     resolution:
       {
@@ -598,6 +605,15 @@ packages:
     resolution:
       {
         integrity: sha512-JIrvhpgqY6437QIqToyozrUG1h5UhwHkaGK/WAX+fkrpyPtc+RO5FkRtUd9BH0MibabHHvqsnBGKfKVijbmp8w==,
+      }
+    engines: { node: ">=14" }
+    peerDependencies:
+      "@opentelemetry/api": ^1.3.0
+
+  "@opentelemetry/instrumentation@0.52.0":
+    resolution:
+      {
+        integrity: sha512-LPwSIrw+60cheWaXsfGL8stBap/AppKQJFE+qqRvzYrgttXFH2ofoIMxWadeqPTq4BYOXM/C7Bdh/T+B60xnlQ==,
       }
     engines: { node: ">=14" }
     peerDependencies:
@@ -1712,6 +1728,12 @@ packages:
     resolution:
       {
         integrity: sha512-Lk+qzWmiQuRPPulGQeK5qq0v32k2bHnWrRPFgqyvhw7Kkov5L6MOLOIU3pcWeujc9W4q54Cp3Q2WV16eQkc7Bg==,
+      }
+
+  import-in-the-middle@1.8.0:
+    resolution:
+      {
+        integrity: sha512-/xQjze8szLNnJ5rvHSzn+dcVXqCAU6Plbk4P24U/jwPmg1wy7IIp9OjKIO5tYue8GSPhDpPDiApQjvBUmWwhsQ==,
       }
 
   imurmurhash@0.1.4:
@@ -2888,6 +2910,10 @@ snapshots:
     dependencies:
       "@opentelemetry/api": 1.8.0
 
+  "@opentelemetry/api-logs@0.52.0":
+    dependencies:
+      "@opentelemetry/api": 1.8.0
+
   "@opentelemetry/api@1.8.0": {}
 
   "@opentelemetry/context-async-hooks@1.24.1(@opentelemetry/api@1.8.0)":
@@ -3046,6 +3072,18 @@ snapshots:
       "@opentelemetry/api-logs": 0.51.1
       "@types/shimmer": 1.0.5
       import-in-the-middle: 1.7.4
+      require-in-the-middle: 7.3.0
+      semver: 7.6.2
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+
+  "@opentelemetry/instrumentation@0.52.0(@opentelemetry/api@1.8.0)":
+    dependencies:
+      "@opentelemetry/api": 1.8.0
+      "@opentelemetry/api-logs": 0.52.0
+      "@types/shimmer": 1.0.5
+      import-in-the-middle: 1.8.0
       require-in-the-middle: 7.3.0
       semver: 7.6.2
       shimmer: 1.2.1
@@ -3809,6 +3847,13 @@ snapshots:
     optional: true
 
   import-in-the-middle@1.7.4:
+    dependencies:
+      acorn: 8.11.3
+      acorn-import-attributes: 1.9.5(acorn@8.11.3)
+      cjs-module-lexer: 1.3.1
+      module-details-from-path: 1.0.3
+
+  import-in-the-middle@1.8.0:
     dependencies:
       acorn: 8.11.3
       acorn-import-attributes: 1.9.5(acorn@8.11.3)
