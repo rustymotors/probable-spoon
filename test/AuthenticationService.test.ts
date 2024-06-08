@@ -1,12 +1,11 @@
-
 import { beforeEach, describe, expect, it } from "vitest";
-import { UserLoginService } from "../packages/main/src/UserLoginService.js";
+import { AuthenticationService } from "../packages/main/src/AuthenticationService.js";
 
 describe("UserLoginService", () => {
-  let userLoginService: UserLoginService;
+  let userLoginService: AuthenticationService;
 
   beforeEach(() => {
-    userLoginService = new UserLoginService();
+    userLoginService = new AuthenticationService();
   });
 
   it("should authenticate a user with valid credentials", () => {

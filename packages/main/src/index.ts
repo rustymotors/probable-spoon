@@ -17,7 +17,7 @@
 import { MainLoop } from "./MainLoop.js";
 import { ShardService } from "./ShardService.js";
 import { TCPServer } from "./TCPServer.js";
-import { UserLoginService } from "./UserLoginService.js";
+import { AuthenticationService } from "./AuthenticationService.js";
 import { WebServer } from "./WebServer.js";
 import { onNPSData } from "./nps.js";
 import { onWebRequest } from "./web.js";
@@ -164,7 +164,7 @@ function main() {
     "Group - 1"
   );
 
-  const userLoginService = new UserLoginService();
+  const userLoginService = new AuthenticationService();
 
   const mainLoop = new MainLoop();
   mainLoop.addTask("start", authServer.listen.bind(authServer));

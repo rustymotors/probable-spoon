@@ -9,7 +9,7 @@ const userCredentials: UserCredentials = [
 ];
 const authTokens: Map<string, number> = new Map();
 
-export class UserLoginService {
+export class AuthenticationService {
   /**
    * Checks if the provided username and password match a user in the system.
    * @param {string} username - The username to check.

@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 import { ShardService } from "./ShardService.js";
-import { UserLoginService } from "./UserLoginService.js";
+import { AuthenticationService } from "./AuthenticationService.js";
 import { readFile } from "node:fs/promises";
 
 /**
@@ -59,7 +59,7 @@ function authLogin(
   username: string,
   password: string
 ) {
-  const userLoginService = new UserLoginService();
+  const userLoginService = new AuthenticationService();
   const customerId = userLoginService.authenticateUser(username, password);
 
   if (customerId === -1) {
