@@ -30,6 +30,11 @@ function sendError(res: ServerResponse, statusCode: number, message: string) {
   );
 }
 
+/**
+ * Sends a Castanet response.
+ * 
+ * @param res - The server response object.
+ */
 function sendCastanetResponse(res: ServerResponse) {
   res.setHeader("Content-Type", "application/octet-stream");
   res.end(
@@ -90,6 +95,15 @@ function getShardList(req: IncomingMessage, res: ServerResponse) {
   res.end(shardService.getShardList());
 }
 
+/**
+ * Retrieves the setup files based on the provided path and sends them as a response.
+ * If the path is "/certificate", it sends the certificate file.
+ * If the path is "/key", it sends the key file.
+ * If the path is not recognized, it sends a 404 error.
+ *
+ * @param path - The path to determine which setup file to retrieve.
+ * @param res - The ServerResponse object to send the setup file as a response.
+ */
 async function getSetupupFiles(path: string, res: ServerResponse) {
   if (path === "/certificate") {
     res.setHeader("Content-Type", "text/plain");
@@ -115,6 +129,10 @@ async function getSetupupFiles(path: string, res: ServerResponse) {
   sendError(res, 404, "File not found");
 }
 
+/**
+ * Logs the details of an incoming request.
+ * @param req - The incoming request object.
+ */
 function logRequest(req: IncomingMessage) {
   console.log(`${req.method} ${req.url} from ${req.socket.remoteAddress}`);
 }
