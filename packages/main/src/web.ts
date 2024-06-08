@@ -25,7 +25,7 @@ function sendError(res: ServerResponse, statusCode: number, message: string) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "text/plain");
   res.end(
-    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`
+    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`,
   );
 }
 
@@ -34,7 +34,7 @@ function sendCastanetResponse(res: ServerResponse) {
   res.end(
     Buffer.from([
       0xca, 0xfe, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
-    ])
+    ]),
   );
 }
 
@@ -56,7 +56,7 @@ function authLogin(
   req: IncomingMessage,
   res: ServerResponse,
   username: string,
-  password: string
+  password: string,
 ) {
   const userLoginService = new UserLoginService();
   const customerId = userLoginService.checkUser(username, password);
@@ -87,7 +87,7 @@ async function getSetupupFiles(path: string, res: ServerResponse) {
     res.setHeader("Content-Type", "text/plain");
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=certificate.crt"
+      "attachment; filename=certificate.crt",
     );
 
     const certificate = await readFile("data/mcouniverse.crt");
