@@ -18,7 +18,7 @@ export class UserLoginService {
    */
   authenticateUser(username: string, password: string): number {
     const user = userCredentials.find(
-      (user) => user.username === username && user.password === password
+      (user) => user.username === username && user.password === password,
     );
 
     return user ? user.customerId : -1;
