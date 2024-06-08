@@ -23,7 +23,14 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.version }}
-    - run: npm test
+    - name: Setup pnpm
+      # You may pin to the exact commit or the version.
+      # uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
+      uses: pnpm/action-setup@v4.0.0
+      with:
+        # If specified, run `pnpm install`
+        run_install: true
+    - run: pnpm test
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
