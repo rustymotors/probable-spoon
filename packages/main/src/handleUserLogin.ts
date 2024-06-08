@@ -14,8 +14,8 @@ export function decryptSessionKey(
   privateKey: string,
 ): string {
   const sessionKeyStructure = crypto.privateDecrypt(
-      privateKey,
-      Buffer.from(encryptedSessionKey, "hex"),
+    privateKey,
+    Buffer.from(encryptedSessionKey, "hex"),
   );
 
   return sessionKeyStructure.toString("hex");
@@ -35,7 +35,10 @@ export function handleUserLogin(
 
   const privateKey = loadPrivateKey("data/private_key.pem");
 
-  const sessionKey = decryptSessionKey(userLoginPayload.sessionKey.toString(), privateKey);
+  const sessionKey = decryptSessionKey(
+    userLoginPayload.sessionKey.toString(),
+    privateKey,
+  );
 
   console.log(`Session key: ${Buffer.from(sessionKey, "hex").toString("hex")}`);
 

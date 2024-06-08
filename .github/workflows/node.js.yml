@@ -5,9 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
   merge_group:
 
 jobs:
@@ -33,3 +31,7 @@ jobs:
         # If specified, run `pnpm install`
         run_install: true
     - run: pnpm test
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
