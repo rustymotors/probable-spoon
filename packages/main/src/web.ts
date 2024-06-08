@@ -22,6 +22,7 @@ function sendTicket(res: ServerResponse, ticket: string) {
  */
 
 function sendError(res: ServerResponse, statusCode: number, message: string) {
+  console.error(message);
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "text/plain");
   res.end(
@@ -65,8 +66,15 @@ function authLogin(
     return sendError(res, 401, "Invalid username or password");
   }
 
-  const token = userLoginService.generateToken(customerId);
-  return sendTicket(res, token);
+  try {
+    const token = userLoginService.generateToken(customerId);
+    return sendTicket(res, token);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+      return sendError(res, 500, error.message);
+    }
+  }
 }
 
 /**

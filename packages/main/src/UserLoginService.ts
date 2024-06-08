@@ -30,6 +30,10 @@ export class UserLoginService {
    * @returns The generated token.
    */
   generateToken(customerId: number): string {
+    if (customerId < 0) {
+      throw new Error(`Invalid customer ID: ${customerId}`);
+    }
+
     const token = crypto.randomUUID();
     authTokens.set(token, customerId);
     return token;
