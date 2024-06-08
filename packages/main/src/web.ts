@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from "node:http";
 import { ShardService } from "./ShardService.js";
 import { UserLoginService } from "./UserLoginService.js";
+import { readFile } from "node:fs/promises";
 
 /**
  *
@@ -24,7 +25,16 @@ function sendError(res: ServerResponse, statusCode: number, message: string) {
   res.statusCode = statusCode;
   res.setHeader("Content-Type", "text/plain");
   res.end(
-    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`,
+    `reasoncode=INV-200\nreasontext=${message}\nreasonurl=https://rusty-motors.com`
+  );
+}
+
+function sendCastanetResponse(res: ServerResponse) {
+  res.setHeader("Content-Type", "application/octet-stream");
+  res.end(
+    Buffer.from([
+      0xca, 0xfe, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
+    ])
   );
 }
 
@@ -46,7 +56,7 @@ function authLogin(
   req: IncomingMessage,
   res: ServerResponse,
   username: string,
-  password: string,
+  password: string
 ) {
   const userLoginService = new UserLoginService();
   const customerId = userLoginService.checkUser(username, password);
@@ -72,19 +82,58 @@ function getShardList(req: IncomingMessage, res: ServerResponse) {
   res.end(shardService.getShardList());
 }
 
+async function getSetupupFiles(path: string, res: ServerResponse) {
+  if (path === "/certificate") {
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=certificate.crt"
+    );
+
+    const certificate = await readFile("data/mcouniverse.crt");
+
+    return res.end(certificate.toString().replace(/\n/g, "\r\n"));
+  }
+
+  if (path === "/key") {
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Disposition", "attachment; filename=pub.key");
+
+    const key = await readFile("data/pub.key");
+
+    return res.end(key);
+  }
+
+  sendError(res, 404, "File not found");
+}
+
+function logRequest(req: IncomingMessage) {
+  console.log(`${req.method} ${req.url} from ${req.socket.remoteAddress}`);
+}
+
 /**
  * @param {import("node:http").IncomingMessage} req
  * @param {import("node:http").ServerResponse} res
  */
 function onWebRequest(req: IncomingMessage, res: ServerResponse) {
-  console.log(`Request URL: ${req.url}`);
   const url = new URL(`http://${process.env.HOST ?? "localhost"}${req.url}`);
 
   if (url.pathname === "/") {
     return homePage(req, res);
   }
 
+  if (url.pathname.startsWith("/games/EA_Seattle/MotorCity/")) {
+    logRequest(req);
+    return sendCastanetResponse(res);
+  }
+
+  if (url.pathname.startsWith("/setup/")) {
+    logRequest(req);
+    return getSetupupFiles(url.pathname.substring(6), res);
+  }
+
   if (url.pathname === "/AuthLogin") {
+    logRequest(req);
     const username = url.searchParams.get("username") ?? "";
     const password = url.searchParams.get("password") ?? "";
 
@@ -94,7 +143,6 @@ function onWebRequest(req: IncomingMessage, res: ServerResponse) {
   if (url.pathname === "/ShardList/") {
     return getShardList(req, res);
   }
-  res.end("Hello, world!");
 }
 
 export { onWebRequest };
