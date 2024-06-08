@@ -30,7 +30,7 @@ import { verifyLegacyCipherSupport } from "./encryption.js";
 type TOnDataHandler = (
   port: number,
   data: Buffer,
-  sendToClient: (data: Buffer) => void,
+  sendToClient: (data: Buffer) => void
 ) => void;
 
 /**
@@ -140,19 +140,19 @@ function main() {
     3000,
     onWebListening,
     onWebRequest,
-    onServerError,
+    onServerError
   );
   const loginServer = new TCPServer(
     8226,
     onSocketListening,
     (socket: net.Socket) => onSocketConnection(socket, onNPSData),
-    onServerError,
+    onServerError
   );
   const personaServer = new TCPServer(
     8228,
     onSocketListening,
     (socket: net.Socket) => onSocketConnection(socket, onNPSData),
-    onServerError,
+    onServerError
   );
 
   const shardService = new ShardService();
@@ -161,7 +161,7 @@ function main() {
     "Rusty Motors",
     "A test shard",
     "10.10.5.20",
-    "Group - 1",
+    "Group - 1"
   );
 
   const userLoginService = new UserLoginService();
@@ -174,11 +174,11 @@ function main() {
   mainLoop.addTask("stop", loginServer.close.bind(loginServer, onServerError));
   mainLoop.addTask(
     "stop",
-    personaServer.close.bind(personaServer, onServerError),
+    personaServer.close.bind(personaServer, onServerError)
   );
   mainLoop.addTask(
     "stop",
-    userLoginService.deleteAllTokens.bind(userLoginService),
+    userLoginService.clearAllTokens.bind(userLoginService)
   );
 
   mainLoop.start();

@@ -59,13 +59,13 @@ function authLogin(
   password: string
 ) {
   const userLoginService = new UserLoginService();
-  const customerId = userLoginService.checkUser(username, password);
+  const customerId = userLoginService.authenticateUser(username, password);
 
   if (customerId === -1) {
     return sendError(res, 401, "Invalid username or password");
   }
 
-  const token = userLoginService.createToken(customerId);
+  const token = userLoginService.generateToken(customerId);
   return sendTicket(res, token);
 }
 

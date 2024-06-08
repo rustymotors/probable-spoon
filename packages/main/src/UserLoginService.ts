@@ -1,64 +1,65 @@
-/** @type {Array<{username: string, password: string, customerId: number}>} */
-const users = [{ username: "admin", password: "admin", customerId: 1 }];
-/** @type {Map<string, number>} */
-const tokens = new Map();
+type UserCredentials = Array<{
+  username: string;
+  password: string;
+  customerId: number;
+}>;
+
+const userCredentials: UserCredentials = [
+  { username: "admin", password: "admin", customerId: 1 },
+];
+const authTokens: Map<string, number> = new Map();
 
 export class UserLoginService {
   /**
-   * Returns the customer ID if the user is valid, otherwise -1.
-   *
-   * @param {string} username
-   * @param {string} password
-   * @returns {number}
+   * Checks if the provided username and password match a user in the system.
+   * @param {string} username - The username to check.
+   * @param {string} password - The password to check.
+   * @returns {number} - The customer ID of the user if found, otherwise -1.
    */
-  checkUser(username: string, password: string) {
-    const user = users.find(
-      (user) => user.username === username && user.password === password,
+  authenticateUser(username: string, password: string): number {
+    const user = userCredentials.find(
+      (user) => user.username === username && user.password === password
     );
 
     return user ? user.customerId : -1;
   }
 
   /**
-   * Creates a token for the given customer ID.
-   *
-   * @param {number} customerId
-   * @returns {string}
+   * Generates a unique token for the given customer ID and stores it in the tokens map.
+   * @param customerId - The ID of the customer.
+   * @returns The generated token.
    */
-  createToken(customerId: number) {
+  generateToken(customerId: number): string {
     const token = crypto.randomUUID();
-    tokens.set(token, customerId);
+    authTokens.set(token, customerId);
     return token;
   }
 
   /**
-   * Checks if the token is valid and returns the customer ID.
-   * If the token is invalid, returns -1.
-   *
-   * @param {string} token
-   * @returns {number}
+   * Checks the validity of a token and returns the associated customer ID.
+   * @param token - The token to be checked.
+   * @returns The customer ID associated with the token, or -1 if the token is invalid.
    */
-  checkToken(token: string) {
-    const customerId = tokens.get(token);
+  getCustomerIdFromToken(token: string): number {
+    const customerId = authTokens.get(token);
     return customerId ?? -1;
   }
 
   /**
-   * Deletes the token.
-   *
-   * @param {string} token
+   * Deletes a token from the collection.
+   * @param {string} token - The token to be deleted.
    */
-  deleteToken(token: string) {
-    tokens.delete(token);
+  removeToken(token: string): void {
+    authTokens.delete(token);
   }
 
   /**
    * Deletes all tokens.
-   * @returns {Promise<void>}
+   * @returns A promise that resolves when all tokens are deleted.
    */
-  async deleteAllTokens(): Promise<void> {
+  async clearAllTokens(): Promise<void> {
     return new Promise((resolve) => {
-      tokens.clear();
+      authTokens.clear();
       console.log("All tokens deleted");
       resolve();
     });
