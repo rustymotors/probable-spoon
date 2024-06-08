@@ -16,7 +16,7 @@ describe("UserLoginService", () => {
   it("should not authenticate a user with invalid credentials", () => {
     const customerId = userLoginService.authenticateUser(
       "admin",
-      "wrongpassword"
+      "wrongpassword",
     );
     expect(customerId).toBe(-1);
   });
