@@ -36,7 +36,7 @@ describe("SessionService", () => {
     const customerId = 1;
 
     expect(() => sessionService.getSession(customerId)).toThrowError(
-      `Session not found for customer ${customerId}`
+      `Session not found for customer ${customerId}`,
     );
   });
 
@@ -48,7 +48,7 @@ describe("SessionService", () => {
     sessionService.deleteSession(customerId);
 
     expect(() => sessionService.getSession(customerId)).toThrowError(
-      `Session not found for customer ${customerId}`
+      `Session not found for customer ${customerId}`,
     );
   });
 });
