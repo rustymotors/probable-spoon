@@ -9,6 +9,7 @@ describe("SessionService", () => {
 
   beforeEach(() => {
     sessionService = new SessionService();
+    sessionService.clearSessions();
   });
 
   it("should create a new session for the specified customer", () => {

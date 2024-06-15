@@ -6,11 +6,12 @@ export type UserSession = {
   sessionKey: string;
 };
 
+const  sessions: Map<number, UserSession> = new Map();
+
 /**
  * Service for managing user sessions.
  */
 export class SessionService {
-  private sessions: Map<number, UserSession> = new Map();
 
   /**
    *
@@ -23,7 +24,7 @@ export class SessionService {
  * @param sessionKey - The session key.
  */
   public createSession(customerId: number, sessionKey: string): void {
-    this.sessions.set(customerId, { customerId, sessionKey });
+    sessions.set(customerId, { customerId, sessionKey });
 
     console.log(`Session created for customer ${customerId}`);
   }
@@ -36,7 +37,7 @@ export class SessionService {
  */
   public getSession(customerId: number): UserSession {
     console.log(`Session retrieved for customer ${customerId}`);
-    const session = this.sessions.get(customerId);
+    const session = sessions.get(customerId);
 
     if (!session) {
       throw new Error(`Session not found for customer ${customerId}`);
@@ -51,7 +52,14 @@ export class SessionService {
  * @param customerId - The ID of the customer whose session needs to be deleted.
  */
   public deleteSession(customerId: number): void {
-    this.sessions.delete(customerId);
+    sessions.delete(customerId);
     console.log(`Session deleted for customer ${customerId}`);
+  }
+
+/**
+ * Clears all sessions.
+ */
+  public clearSessions(): void {
+    sessions.clear();
   }
 }

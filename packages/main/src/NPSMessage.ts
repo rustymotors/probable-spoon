@@ -38,9 +38,27 @@ export class NPSMessage {
   }
 
   /**
+   * Sets the message ID of the NPSMessage.
+   * @param messageId - The ID to set for the message.
+   */
+  setMessageId(messageId: number) {
+    this._header.messageId = messageId;
+  }
+
+  /**
+   * Sets the message version.
+   * @param version - The version number to set.
+   */
+  setMessageVersion(version: number) {
+    this._header.version = version;
+    this._header._dataStart = version === 257 ? 12 : 6;
+  }
+
+  /**
    * @returns Buffer
    */
   toBuffer() {
+    this._header.messageLength = this._header.dataOffset + this.data.toBuffer().length;
     return Buffer.concat([this._header.toBuffer(), this.data.toBuffer()]);
   }
 

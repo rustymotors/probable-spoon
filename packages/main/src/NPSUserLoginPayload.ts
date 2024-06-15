@@ -1,7 +1,7 @@
 import { NPSMessagePayload } from "./NPSMessagePayload.js";
 import type { INPSPayload } from "./types.js";
 
-class PackedSessionKey {
+export class PackedSessionKey {
   key: string;
   timestamp: number;
 

@@ -7,10 +7,10 @@ export class NPSMessageHeader {
   messageLength: number;
   version: number;
   constructor() {
-    this._dataStart = -1;
+    this._dataStart = 6;
     this.messageId = -1;
-    this.messageLength = -1;
-    this.version = -1;
+    this.messageLength = 6;
+    this.version = 0;
   }
 
   /**
@@ -56,6 +56,11 @@ export class NPSMessageHeader {
    * @returns Buffer
    */
   toBuffer() {
+
+    if (this.messageId === -1 || this.messageLength === -1 || this.version === -1) {
+      throw new Error("Invalid header");
+    }
+
     const buffer = Buffer.alloc(6);
     buffer.writeUInt16BE(this.messageId, 0);
     buffer.writeUInt16BE(this.messageLength, 2);
